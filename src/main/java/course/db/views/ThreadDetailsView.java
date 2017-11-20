@@ -1,4 +1,4 @@
 package course.db.views;
 
-public class ThreadDetailsView {
+public class ThreadDetailsView implements AbstractView  {
 }

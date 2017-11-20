@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path="/post")
 public class PostController extends AbstractController {
     @RequestMapping(path="/{id}/details", method= RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AbstractView> getDetails(@PathVariable(value="id") String stringId) {
+    public ResponseEntity<AbstractView> getDetails(@PathVariable(value="id") String stringId,
+                                                   @RequestParam(value="related", required = false) String[] related) {
         final int id;
         try {
             id = new Integer(stringId);

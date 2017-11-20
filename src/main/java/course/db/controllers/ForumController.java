@@ -30,12 +30,21 @@ public class ForumController extends AbstractController {
     }
 
     @RequestMapping(path="/{slug}/users", method= RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AbstractView> getUsers(@PathVariable(value="slug") String slug) {
+    public ResponseEntity<AbstractView> getUsers(@PathVariable(value="slug") String slug,
+                                                 @RequestParam(value="limit",required = false) Integer limit,
+                                                 @RequestParam(value="since",required = false) String since,
+                                                 @RequestParam(value="desc",required = false) Boolean desc
+                                                 ) {
+
         return  ResponseEntity.status(HttpStatus.OK).body(new ErrorView(""));
     }
 
     @RequestMapping(path="/{slug}/threads", method= RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AbstractView> getThreads(@PathVariable(value="slug") String slug) {
+    public ResponseEntity<AbstractView> getThreads(@PathVariable(value="slug") String slug,
+                                                   @RequestParam(value="limit",required = false) Integer limit,
+                                                   @RequestParam(value="since",required = false) String since,
+                                                   @RequestParam(value="desc",required = false) Boolean desc
+                                                ) {
         return  ResponseEntity.status(HttpStatus.OK).body(new ErrorView(""));
     }
 }
