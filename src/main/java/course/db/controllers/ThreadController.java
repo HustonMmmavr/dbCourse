@@ -15,11 +15,13 @@ public class ThreadController extends AbstractController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AbstractView> createThread(@RequestBody ArrayList<PostView> posts,
                                                      @PathVariable(value = "slug_or_id") String slug_or_id) {
+        return new ResponseEntity<>(new ErrorView("f"), null, HttpStatus.OK);
 
     }
 
     @RequestMapping(path="/{slug_or_id}/details", method= RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AbstractView> getDetails(@PathVariable(value = "slug_or_id") String slug_or_id) {
+        return new ResponseEntity<>(new ErrorView("f"), null, HttpStatus.OK);
 
     }
 
@@ -27,6 +29,7 @@ public class ThreadController extends AbstractController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AbstractView> setDetails(@RequestBody ThreadView threadView,
                                                    @PathVariable(value = "slug_or_id") String slug_or_id) {
+        return new ResponseEntity<>(new ErrorView("f"), null, HttpStatus.OK);
 
     }
 
@@ -36,6 +39,7 @@ public class ThreadController extends AbstractController {
                                                  @RequestParam(value="since",required = false) Integer since,
                                                  @RequestParam(value="sort",required = false) String sort,
                                                  @RequestParam(value="desc",required = false) Boolean desc) {
+        return new ResponseEntity<>(new ErrorView("f"), null, HttpStatus.OK);
 
     }
 

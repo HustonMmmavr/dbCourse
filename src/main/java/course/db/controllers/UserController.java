@@ -1,7 +1,9 @@
 package course.db.controllers;
 
 import course.db.views.AbstractView;
+import course.db.views.ErrorView;
 import course.db.views.UserProfileView;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,11 +15,13 @@ public class UserController extends AbstractController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AbstractView> createThread(@RequestBody UserProfileView userProfileView,
                                                      @PathVariable(value="nickname") String nickname) {
+        return new ResponseEntity<>(new ErrorView("f"), null, HttpStatus.OK);
 
     }
 
     @RequestMapping(path="/{nickname}/profile", method= RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AbstractView> getProfile(@PathVariable(value = "nickname") String nickname) {
+        return new ResponseEntity<>(new ErrorView("f"), null, HttpStatus.OK);
 
     }
 
@@ -25,6 +29,7 @@ public class UserController extends AbstractController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AbstractView> setProfile(@RequestBody UserProfileView userProfileView,
                                                    @PathVariable(value = "nickname") String nickname) {
+        return new ResponseEntity<>(new ErrorView("f"), null, HttpStatus.OK);
 
     }
 

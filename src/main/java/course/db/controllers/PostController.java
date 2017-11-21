@@ -3,6 +3,7 @@ package course.db.controllers;
 import course.db.views.AbstractView;
 import course.db.views.ErrorView;
 import course.db.views.PostDetailsView;
+import course.db.views.PostView;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class PostController extends AbstractController {
         } catch (NumberFormatException ex) {
             return new ResponseEntity<>(new ErrorView("Invalid id"), null, HttpStatus.BAD_REQUEST);
         }
-        return  new ResponseEntity<ErrorView>(HttpStatus.OK,null, new PostDetailsView());
+        return new ResponseEntity<>(new ErrorView("f"), null, HttpStatus.OK);
     }
 
     @RequestMapping(path="/{id}/details", method= RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,

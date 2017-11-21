@@ -1,5 +1,6 @@
 package course.db.dao;
 
+import course.db.db_queries.QueryForThread;
 import jdk.nashorn.internal.scripts.JD;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,8 +18,14 @@ public class ThreadDAO extends AbstractDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+
+    @Override
+    public Integer count() {
+        return jdbcTemplate.queryForObject(QueryForThread.count(), Integer.class);
+    }
+
     @Override
     public void clear(){
-        final String clearQuery = "DELETE "
+        jdbcTemplate.execute(QueryForThread.clear());
     }
 }

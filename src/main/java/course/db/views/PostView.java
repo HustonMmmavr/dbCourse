@@ -14,6 +14,10 @@ public class PostView implements AbstractView {
     private Integer thread;
     private String created;
 
+    public PostView(){
+
+    }
+
     public PostView(Integer id, Integer parent, String author, String message, Boolean isEdited, String forum, Integer thread, String created) {
         this.id = id;
         this.parent = parent;

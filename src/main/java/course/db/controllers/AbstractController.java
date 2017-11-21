@@ -1,21 +1,10 @@
 package course.db.controllers;
 
-import course.db.dao.ForumDAO;
-import course.db.dao.PostDAO;
-import course.db.dao.ThreadDAO;
-import course.db.dao.UserDAO;
 import course.db.managers.ForumManager;
 import course.db.managers.PostManager;
 import course.db.managers.ThreadManager;
 import course.db.managers.UserManager;
-import course.db.views.PostDetailsView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mock.staticmock.MockStaticEntityMethods;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotNull;

@@ -11,19 +11,14 @@ import org.springframework.stereotype.Repository;
 import javax.validation.constraints.NotNull;
 
 @Repository
-public class UserDAO extends AbstractDAO {
+public class UserProfileDAO extends AbstractDAO {
     @NotNull
     @Autowired
     JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public UserDAO(JdbcTemplate jdbcTemplate) {
+    public UserProfileDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-    }
-
-    @Override
-    public void clear() {
-
     }
 
     public void create(@NotNull UserProfileModel userProfileModel) {
@@ -31,5 +26,14 @@ public class UserDAO extends AbstractDAO {
                             userProfileModel.getFullname(), userProfileModel.getNickname());
     }
 
+    @Override
+    public Integer count() {
+        return jdbcTemplate.queryForObject(QueryForUserProfile.count(), Integer.class);
+    }
+
+    @Override
+    public void clear() {
+        jdbcTemplate.execute(QueryForUserProfile.clear());
+    }
 
 }

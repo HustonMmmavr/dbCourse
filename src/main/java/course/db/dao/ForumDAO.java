@@ -1,5 +1,6 @@
 package course.db.dao;
 
+import course.db.db_queries.QueryForForums;
 import course.db.models.ForumModel;
 import course.db.views.ForumView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,12 @@ public class ForumDAO extends AbstractDAO {
     }
 
     @Override
+    public Integer count(){
+        return jdbcTemplate.queryForObject(QueryForForums.count(), Integer.class);
+    }
+
+    @Override
     public void clear() {
-//        jdbcTemplate
+        jdbcTemplate.execute(QueryForForums.clear());
     }
 }
