@@ -1,29 +1,26 @@
-package course.db.views;
+package course.db.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import course.db.views.ForumView;
 
-public class ForumView implements AbstractView {
+public class ForumModel {
     private String title;
     private String user;
     private String slug;
     private Integer posts;
     private Integer threads;
 
-    @JsonCreator
-    public ForumView(@JsonProperty("title") String title, @JsonProperty("user") String user,
-                     @JsonProperty("slug") String slug) {
-        this.title = title;
-        this.user = user;
-        this.slug = slug;
+
+    public ForumModel(ForumView forumView) {
+        this.posts = forumView.getPosts();
+        this.slug = forumView.getSlug();
+        this.threads = forumView.getThreads();
+        this.user = forumView.getUser();
+        this.title = forumView.getTitle();
     }
 
-    public ForumView(String title, String user, String slug, Integer posts, Integer threads){
-        this.title = title;
-        this.user = user;
-        this.slug = slug;
-        this.posts = posts;
-        this.threads = threads;
+    public ForumView toForumView(){
+        final ForumView forumView = new ForumView(title,user, slug, posts, threads);
+        return forumView;
     }
 
     public String getTitle() {

@@ -4,6 +4,10 @@ import course.db.dao.ForumDAO;
 import course.db.dao.PostDAO;
 import course.db.dao.ThreadDAO;
 import course.db.dao.UserDAO;
+import course.db.managers.ForumManager;
+import course.db.managers.PostManager;
+import course.db.managers.ThreadManager;
+import course.db.managers.UserManager;
 import course.db.views.PostDetailsView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -19,22 +23,37 @@ import javax.validation.constraints.NotNull;
 
 @RestController
 public class AbstractController {
-    @Autowired
-    @NotNull
-    protected UserDAO userDAO;
+//    @Autowired
+//    @NotNull
+//    protected UserDAO userDAO;
+//
+//    @Autowired
+//    @NotNull
+//    protected ForumDAO forumDAO;
+//
+//    @Autowired
+//    @NotNull
+//    protected ThreadDAO threadDAO;
+//
+//    @Autowired
+//    @NotNull
+//    protected PostDAO postDAO;
 
     @Autowired
     @NotNull
-    protected ForumDAO forumDAO;
+    protected UserManager userManager;
 
     @Autowired
     @NotNull
-    protected ThreadDAO threadDAO;
+    protected ForumManager forumManager;
 
     @Autowired
     @NotNull
-    protected PostDAO postDAO;
+    protected PostManager postManager;
 
+    @Autowired
+    @NotNull
+    protected ThreadManager threadManager;
 //    public AbstractController(@NotNull UserDAO userDAO, @NotNull ForumDAO forumDAO, @NotNull ThreadDAO threadDAO,
 //                              @NotNull PostDAO postDAO) {
 //        this.forumDAO = forumDAO;

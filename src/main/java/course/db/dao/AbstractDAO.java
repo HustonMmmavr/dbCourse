@@ -9,4 +9,5 @@ import javax.validation.constraints.NotNull;
 @Repository
 public class AbstractDAO {
     public void clear(){}
+    public Integer count() {return 0;}
 }
