@@ -10,6 +10,7 @@ public class UserProfileView implements AbstractView {
     private String about;
     private String email;
 
+    public UserProfileView(){}
     @JsonCreator
     public UserProfileView(@JsonProperty("nickname") @Nullable String nickname,
                            @JsonProperty("fullname") String fullname,

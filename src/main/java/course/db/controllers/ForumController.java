@@ -18,7 +18,7 @@ public class ForumController extends AbstractController {
     produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AbstractView> createForum(@RequestBody ForumView forumView) {
         try {
-            forumDAO.create(new ForumModel(forumView));
+//            forumDAO.create(new ForumModel(forumView));
         }
         catch (DuplicateKeyException ex) {
 

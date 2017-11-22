@@ -5,6 +5,10 @@ public class QueryForUserProfile {
         return "INSERT INTO userprofiles (about, email, fullname, nickname) VALUES(?, ?, ?, ?)";
     }
 
+    static public String getUserByNickOrEmail() {
+        return "SELECT * FROM userprofiles WHERE nickname=? OR email =?";
+    }
+
     static public String count() {
         return "SELECT COUNT(*) FROM userprofiles";
     }
