@@ -12,22 +12,6 @@ import javax.validation.constraints.NotNull;
 
 @RestController
 public class AbstractController {
-//    @Autowired
-//    @NotNull
-//    protected UserDAO userDAO;
-//
-//    @Autowired
-//    @NotNull
-//    protected ForumDAO forumDAO;
-//
-//    @Autowired
-//    @NotNull
-//    protected ThreadDAO threadDAO;
-//
-//    @Autowired
-//    @NotNull
-//    protected PostDAO postDAO;
-
     @Autowired
     @NotNull
     protected UserProfileManager userProfileManager;

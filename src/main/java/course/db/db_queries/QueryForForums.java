@@ -7,8 +7,8 @@ public class QueryForForums {
     }
 
     public static String findForumBySlug() {
-        return "SELECT forum.title, forum.posts, forum.threads, forum.slug, user.nickname " +
-                "FROM forums forum JOIN userprofiles user ON (forum.owner_id=user.id) " +
+        return "SELECT forum.title, forum.posts, forum.threads, forum.slug, _user.nickname " +
+                "FROM forums forum JOIN userprofiles _user ON (forum.owner_id=_user.id) " +
                 "WHERE forum.slug = ?";
     }
 

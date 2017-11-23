@@ -25,6 +25,9 @@ public class ForumController extends AbstractController {
         ResponseCodes responseCode = forumManager.create(new ForumModel(forumView));
         switch(responseCode) {
             case OK:
+                // TODO read from db
+                forumView.setPosts(0);
+                forumView.setThreads(0);
                 return new ResponseEntity<>(forumView, null, HttpStatus.CREATED); //
             case NO_RESULT:
                 return new ResponseEntity<>(new ErrorView("No such user"), null, HttpStatus.NOT_FOUND);
@@ -32,7 +35,7 @@ public class ForumController extends AbstractController {
                 ForumModel existingForum = new ForumModel();
                 existingForum.setSlug(forumView.getSlug());
                 ResponseCodes responseCode1 = forumManager.findForum(existingForum);
-                if (responseCode == ResponseCodes.DB_ERROR)
+                if (responseCode1 == ResponseCodes.DB_ERROR)
                     return new ResponseEntity<>(new ErrorView("Error db"), null, HttpStatus.INTERNAL_SERVER_ERROR);
                 return new ResponseEntity<AbstractView>(existingForum.toForumView(), null, HttpStatus.CONFLICT);
             default:
@@ -58,6 +61,7 @@ public class ForumController extends AbstractController {
     @RequestMapping(path="/{slug}/create", method= RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AbstractView> createBranch(@PathVariable(value="slug") String slug, @RequestBody ThreadView threadView) {
+        threadView.setSlug(slug);
         ResponseCodes responseCode = forumManager.createThread(new ThreadModel(threadView));
         switch(responseCode) {
             case OK:

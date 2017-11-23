@@ -25,6 +25,9 @@ public class ForumManager {
         try {
             forumDAO.create(forumModel);
         }
+        catch (EmptyResultDataAccessException ex) {
+            return ResponseCodes.NO_RESULT;
+        }
         catch(DuplicateKeyException dupE) {
             return ResponseCodes.CONFILICT;
         }
