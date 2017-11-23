@@ -4,10 +4,7 @@ import course.db.managers.ResponseCodes;
 import course.db.managers.ThreadManager;
 import course.db.models.ForumModel;
 import course.db.models.ThreadModel;
-import course.db.views.AbstractView;
-import course.db.views.ErrorView;
-import course.db.views.ForumView;
-import course.db.views.ThreadView;
+import course.db.views.*;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -132,8 +129,8 @@ public class ForumController extends AbstractController {
                 break;
         }
 
-        List<ThreadView> threadViewList = new ArrayList<>();
-        ResponseCodes responseCode1 = forumManager.findUsers(forumModel, threadViewList);
+        List<UserProfileView> userProfileList = new ArrayList<>();
+        ResponseCodes responseCode1 = forumManager.findUsers(forumModel, userProfileList);
         switch (responseCode1) {
             case NO_RESULT:
                 return new ResponseEntity<>(new ErrorView("No such user"), null, HttpStatus.NOT_FOUND);
@@ -142,7 +139,7 @@ public class ForumController extends AbstractController {
             default:
                 break;
         }
-        return new ResponseEntity<>(threadViewList, null, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(userProfileList, null, HttpStatus.INTERNAL_SERVER_ERROR);
 
 //        return  ResponseEntity.status(HttpStatus.OK).body(new ErrorView(""));
     }

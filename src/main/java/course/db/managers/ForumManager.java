@@ -5,6 +5,8 @@ import course.db.dao.ForumDAO;
 import course.db.models.ForumModel;
 import course.db.models.ThreadModel;
 import course.db.views.ForumView;
+import course.db.views.ThreadView;
+import course.db.views.UserProfileView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
@@ -78,6 +80,32 @@ public class ForumManager {
             return ResponseCodes.NO_RESULT;
         }
         catch (DataAccessException daEx) {
+            return ResponseCodes.DB_ERROR;
+        }
+        return ResponseCodes.OK;
+    }
+
+    public ResponseCodes findThreads(ForumModel forumModel, List<ThreadView> threadViewList) {
+        try {
+
+        }
+        catch (EmptyResultDataAccessException e) {
+            return ResponseCodes.NO_RESULT;
+        }
+        catch (DataAccessException d) {
+            return ResponseCodes.DB_ERROR;
+        }
+        return ResponseCodes.OK;
+    }
+
+    public ResponseCodes findUsers(ForumModel forumModel, List<UserProfileView> userProfileViewList) {
+        try {
+
+        }
+        catch (EmptyResultDataAccessException e) {
+            return ResponseCodes.NO_RESULT;
+        }
+        catch (DataAccessException d) {
             return ResponseCodes.DB_ERROR;
         }
         return ResponseCodes.OK;
