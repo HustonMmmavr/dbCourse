@@ -62,19 +62,20 @@ public class ForumController extends AbstractController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AbstractView> createBranch(@PathVariable(value="slug") String slug, @RequestBody ThreadView threadView) {
         threadView.setSlug(slug);
-        ResponseCodes responseCode = forumManager.createThread(new ThreadModel(threadView));
+        ThreadModel threadModel = new ThreadModel(threadView);
+        ResponseCodes responseCode = threadManager.createThread(threadModel);
         switch(responseCode) {
             case OK:
-                return new ResponseEntity<>(threadView, null, HttpStatus.CREATED); //
+                return new ResponseEntity<>(threadModel.toView(), null, HttpStatus.CREATED); //
             case NO_RESULT:
                 return new ResponseEntity<>(new ErrorView("No such user"), null, HttpStatus.NOT_FOUND);
             case CONFILICT:
-                ForumModel existingForum = new ForumModel();
-                existingForum.setSlug(threadView.getSlug());
-//                ResponseCodes responseCode1 = threadManager.findForum(existingForum);
+                ThreadModel existingThread = new ThreadModel();
+                existingThread.setSlug(threadView.getSlug());
+                ResponseCodes responseCode1 = threadManager.findThread(existingThread);
                 if (responseCode == ResponseCodes.DB_ERROR)
                     return new ResponseEntity<>(new ErrorView("Error db"), null, HttpStatus.INTERNAL_SERVER_ERROR);
-                return new ResponseEntity<AbstractView>(existingForum.toForumView(), null, HttpStatus.CONFLICT);
+                return new ResponseEntity<AbstractView>(existingThread.toView(), null, HttpStatus.CONFLICT);
             default:
                 return new ResponseEntity<>(new ErrorView("Error db"), null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

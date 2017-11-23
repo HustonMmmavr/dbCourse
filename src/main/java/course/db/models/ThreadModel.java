@@ -12,6 +12,8 @@ public class ThreadModel {
     private String forum;
     private String slug;
 
+    public ThreadModel() {}
+
     public ThreadModel(ThreadView threadView) {
         this.author = threadView.getAuthor();
         this.created = threadView.getCreated();
@@ -32,6 +34,17 @@ public class ThreadModel {
         this.created = created;
         this.forum = forum;
         this.slug = slug;
+    }
+
+    public void copy(ThreadModel other) {
+        this.setAuthor(other.getAuthor());
+        this.setCreated(other.getCreated());
+        this.setId(other.getId());
+        this.setForum(other.getForum());
+        this.setSlug(other.getSlug());
+        this.setMessage(other.getMessage());
+        this.setTitle(other.getTitle());
+        this.setVotes(other.getVotes());
     }
 
     public ThreadView toView() {

@@ -37,32 +37,33 @@ public class ForumManager {
         return ResponseCodes.OK;
     }
 
-    public ResponseCodes createThread (ThreadModel threadModel) {
-        try {
-           ThreadModel createdThread =  forumDAO.createThread(threadModel);
-
-           threadModel.setAuthor(createdThread.getAuthor());
-           threadModel.setCreated(createdThread.getCreated());
-           threadModel.setId(createdThread.getId());
-           threadModel.setForum(createdThread.getForum());
-           threadModel.setSlug(createdThread.getSlug());
-           threadModel.setMessage(createdThread.getMessage());
-           threadModel.setTitle(createdThread.getTitle());
-           threadModel.setVotes(createdThread.getVotes());
-//           threadModel;
-            //TODO fill data from
-        }
-        catch (EmptyResultDataAccessException ex) {
-            return ResponseCodes.NO_RESULT;
-        }
-        catch (DuplicateKeyException dex) {
-            return ResponseCodes.CONFILICT;
-        }
-        catch (DataAccessException d) {
-            return ResponseCodes.DB_ERROR;
-        }
-        return ResponseCodes.OK;
-    }
+//    public ResponseCodes createThread (ThreadModel threadModel) {
+//        try {
+//           ThreadModel createdThread =  threadDAO.createThread(threadModel);
+//
+//           threadModel.setAuthor(createdThread.getAuthor());
+//           threadModel.setCreated(createdThread.getCreated());
+//           threadModel.setId(createdThread.getId());
+//           threadModel.setForum(createdThread.getForum());
+//           threadModel.setSlug(createdThread.getSlug());
+//           threadModel.setMessage(createdThread.getMessage());
+//           threadModel.setTitle(createdThread.getTitle());
+//           threadModel.setVotes(createdThread.getVotes());
+////           threadModel;
+//            //TODO fill data from
+//        }
+//        catch (EmptyResultDataAccessException ex) {
+//            return ResponseCodes.NO_RESULT;
+//        }
+//        catch (DuplicateKeyException dex) {
+//            return ResponseCodes.CONFILICT;
+//        }
+//        catch (DataAccessException d) {
+//            System.out.print(d.getMessage());
+//            return ResponseCodes.DB_ERROR;
+//        }
+//        return ResponseCodes.OK;
+//    }
 
 
     public ResponseCodes findForum(ForumModel forumModel) {//, List<ForumView> forumViewList) {

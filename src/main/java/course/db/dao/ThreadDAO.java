@@ -27,6 +27,24 @@ public class ThreadDAO extends AbstractDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public ThreadModel createThread(ThreadModel threadModel) {
+        Integer userId = jdbcTemplate.queryForObject(QueryForUserProfile.getIdByNick(), new Object[] {threadModel.getAuthor()},
+                Integer.class);
+        Integer forumId = jdbcTemplate.queryForObject(QueryForForums.findForumIdBySlug(), new Object[] {threadModel.getSlug()},
+                Integer.class);
+        String created = threadModel.getCreated();
+        if (created == null) {
+            jdbcTemplate.update(QueryForThread.createNoDate(), new Object[] {
+                    userId, forumId, threadModel.getTitle(), threadModel.getMessage(), 0, threadModel.getSlug()});
+        }
+        else
+        {
+            jdbcTemplate.update(QueryForThread.createWithDate(), new Object[]{
+                    userId, forumId, threadModel.getTitle(), threadModel.getCreated(), threadModel.getMessage(), 0, threadModel.getSlug()});
+        }
+        return jdbcTemplate.queryForObject(QueryForForums.findThread(), new Object[] {threadModel.getSlug()}, _getThread);
+    }
+
 //    public ThreadModel createByForum(ThreadModel threadModel) {
 //        Integer userId = jdbcTemplate.queryForObject(QueryForUserProfile.getIdByNick(), new Object[] {threadModel.getAuthor()},
 //                                                            Integer.class);
@@ -44,6 +62,10 @@ public class ThreadDAO extends AbstractDAO {
 //        }
 //        return jdbcTemplate.queryForObject(QueryForThread.findThread(), new Object[] {threadModel.getSlug(), threadModel.getId()}, _getThread);
 //    }
+
+    public ThreadModel findThread(ThreadModel threadModel) {
+        return jdbcTemplate.queryForObject(QueryForForums.findThread(), new Object[] {threadModel.getSlug()}, _getThread);
+    }
 
     @Override
     public Integer count() {

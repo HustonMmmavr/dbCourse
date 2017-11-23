@@ -1,5 +1,6 @@
 package course.db.dao;
 
+import course.db.models.ForumModel;
 import course.db.models.ThreadModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,5 +19,10 @@ public class AbstractDAO {
             rs.getInt("votes"), rs.getInt("id"), rs.getString("title"), rs.getString("nickname"),
             rs.getString("message"), rs.getString("created"), rs.getString("forum_slug"),rs.getString("thread_slug")
     );
+
+    protected RowMapper<ForumModel> _getForumBySlug = (rs, rowNum) -> new ForumModel(
+            rs.getString("title"), rs.getString("nickname"), rs.getString("slug"), rs.getInt("posts"),
+            rs.getInt("threads"));
+
 
 }

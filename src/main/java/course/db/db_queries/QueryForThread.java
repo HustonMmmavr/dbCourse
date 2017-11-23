@@ -11,12 +11,12 @@ public class QueryForThread {
 
     // TODO maybe function in db
     static public String createNoDate() {
-        return "INSERT INTO threads (author_id, forum_id, title, created, message, vote, slug)" +
-                "VALUES(?, ?, ?,  NOW(), ?, ?, ?";
+        return "INSERT INTO threads (author_id, forum_id, title, created, message, votes, slug)" +
+                "VALUES(?, ?, ?,  NOW(), ?, ?, ?)";
     }
 
     static public String createWithDate() {
-        return "INSERT INTO threads (author_id, forum_id, title, created, message, vote, slug)" +
+        return "INSERT INTO threads (author_id, forum_id, title, created, message, votes, slug)" +
                 "VALUES(?, ?, ?, ?, ?, ?, ?)";
     }
 
