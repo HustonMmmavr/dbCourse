@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -79,26 +80,70 @@ public class ForumController extends AbstractController {
             default:
                 return new ResponseEntity<>(new ErrorView("Error db"), null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
     @RequestMapping(path="/{slug}/users", method= RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AbstractView> getUsers(@PathVariable(value="slug") String slug,
+    public ResponseEntity<Object> getUsers(@PathVariable(value="slug") String slug,
                                                  @RequestParam(value="limit",required = false) Integer limit,
                                                  @RequestParam(value="since",required = false) String since,
                                                  @RequestParam(value="desc",required = false) Boolean desc
                                                  ) {
+        ForumModel forumModel = new ForumModel();
+        forumModel.setSlug(slug);
+        ResponseCodes responseCode = forumManager.findForum(forumModel);
+        switch (responseCode) {
+            case NO_RESULT:
+                return new ResponseEntity<>(new ErrorView("No such user"), null, HttpStatus.NOT_FOUND);
+            case DB_ERROR:
+                return new ResponseEntity<>(new ErrorView("Error db"), null, HttpStatus.INTERNAL_SERVER_ERROR);
+            default:
+                break;
+        }
 
-        return  ResponseEntity.status(HttpStatus.OK).body(new ErrorView(""));
+        List<ThreadView> threadViewList = new ArrayList<>();
+        ResponseCodes responseCode1 = forumManager.findThreads(forumModel, threadViewList);
+        switch (responseCode1) {
+            case NO_RESULT:
+                return new ResponseEntity<>(new ErrorView("No such user"), null, HttpStatus.NOT_FOUND);
+            case DB_ERROR:
+                return new ResponseEntity<>(new ErrorView("Error db"), null, HttpStatus.INTERNAL_SERVER_ERROR);
+            default:
+                break;
+        }
+        return new ResponseEntity<>(threadViewList, null, HttpStatus.INTERNAL_SERVER_ERROR);
+
     }
 
     @RequestMapping(path="/{slug}/threads", method= RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AbstractView> getThreads(@PathVariable(value="slug") String slug,
+    public ResponseEntity<Object> getThreads(@PathVariable(value="slug") String slug,
                                                    @RequestParam(value="limit",required = false) Integer limit,
                                                    @RequestParam(value="since",required = false) String since,
                                                    @RequestParam(value="desc",required = false) Boolean desc
                                                 ) {
+        ForumModel forumModel = new ForumModel();
+        forumModel.setSlug(slug);
+        ResponseCodes responseCode = forumManager.findForum(forumModel);
+        switch (responseCode) {
+            case NO_RESULT:
+                return new ResponseEntity<>(new ErrorView("No such user"), null, HttpStatus.NOT_FOUND);
+            case DB_ERROR:
+                return new ResponseEntity<>(new ErrorView("Error db"), null, HttpStatus.INTERNAL_SERVER_ERROR);
+            default:
+                break;
+        }
 
-        return  ResponseEntity.status(HttpStatus.OK).body(new ErrorView(""));
+        List<ThreadView> threadViewList = new ArrayList<>();
+        ResponseCodes responseCode1 = forumManager.findUsers(forumModel, threadViewList);
+        switch (responseCode1) {
+            case NO_RESULT:
+                return new ResponseEntity<>(new ErrorView("No such user"), null, HttpStatus.NOT_FOUND);
+            case DB_ERROR:
+                return new ResponseEntity<>(new ErrorView("Error db"), null, HttpStatus.INTERNAL_SERVER_ERROR);
+            default:
+                break;
+        }
+        return new ResponseEntity<>(threadViewList, null, HttpStatus.INTERNAL_SERVER_ERROR);
+
+//        return  ResponseEntity.status(HttpStatus.OK).body(new ErrorView(""));
     }
 }

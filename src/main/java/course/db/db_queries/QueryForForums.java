@@ -18,9 +18,9 @@ public class QueryForForums {
 //                "WHERE forum.slug = ?";
 //    }
 
-    public static String incrementThreads() {
-        return "";
-    }
+//    public static String incrementThreads() {
+//        return "";
+//    }
 
     public static String findForumIdBySlug() {
         return "SELECT id FROM forums WHERE slug = ?";
@@ -33,6 +33,10 @@ public class QueryForForums {
                 "FROM threads thread JOIN userprofiles _user ON (thread.author_id = _user.id)" +
                 "JOIN forums forum ON (thread.forum_id = forum.id)" +
                 "WHERE forum.slug = ? ";
+    }
+
+    static public String incThreadCount() {
+        return "UPDATE forums SET threads=threads+1 WHERE id = ?";
     }
 
     static public String count() {

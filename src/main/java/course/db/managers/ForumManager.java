@@ -39,7 +39,7 @@ public class ForumManager {
 
 //    public ResponseCodes createThread (ThreadModel threadModel) {
 //        try {
-//           ThreadModel createdThread =  threadDAO.createThread(threadModel);
+//           ThreadModel createdThread =  threadDAOd.createThread(threadModel);
 //
 //           threadModel.setAuthor(createdThread.getAuthor());
 //           threadModel.setCreated(createdThread.getCreated());

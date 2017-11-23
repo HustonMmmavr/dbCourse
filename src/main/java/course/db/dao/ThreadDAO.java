@@ -27,6 +27,7 @@ public class ThreadDAO extends AbstractDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    // TODO transcaction
     public ThreadModel createThread(ThreadModel threadModel) {
         Integer userId = jdbcTemplate.queryForObject(QueryForUserProfile.getIdByNick(), new Object[] {threadModel.getAuthor()},
                 Integer.class);
@@ -42,6 +43,8 @@ public class ThreadDAO extends AbstractDAO {
             jdbcTemplate.update(QueryForThread.createWithDate(), new Object[]{
                     userId, forumId, threadModel.getTitle(), threadModel.getCreated(), threadModel.getMessage(), 0, threadModel.getSlug()});
         }
+        int res = jdbcTemplate.update(QueryForForums.incThreadCount(), new Object[] {forumId});
+
         return jdbcTemplate.queryForObject(QueryForForums.findThread(), new Object[] {threadModel.getSlug()}, _getThread);
     }
 
