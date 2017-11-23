@@ -9,6 +9,10 @@ public class QueryForUserProfile {
         return "SELECT * FROM userprofiles WHERE nickname=? OR email =?";
     }
 
+    static public String getIdByNick() {
+        return "SELECT id FROM userprofiles WHERE nickname=?";
+    }
+
     static public String count() {
         return "SELECT COUNT(*) FROM userprofiles";
     }

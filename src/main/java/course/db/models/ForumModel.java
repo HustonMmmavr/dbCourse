@@ -9,6 +9,15 @@ public class ForumModel {
     private Integer posts;
     private Integer threads;
 
+    public ForumModel() {}
+
+    public ForumModel(String title, String user,String slug, Integer posts, Integer threads) {
+        this.posts = posts;
+        this.slug = slug;
+        this.threads = threads;
+        this.user = user;
+        this.title = title;
+    }
 
     public ForumModel(ForumView forumView) {
         this.posts = forumView.getPosts();

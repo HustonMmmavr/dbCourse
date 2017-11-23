@@ -16,14 +16,24 @@ public class PostManager {
     @Autowired
     public PostManager(@NotNull PostDAO postDAO) {this.postDAO = postDAO;}
 
-    public ResponseCodes statusClear(Integer count) {
+    public ResponseCodes statusClear() {
         try {
-            count = postDAO.count();
+//            count = postDAO.count();
             postDAO.clear();
         }
         catch (DataAccessException dAx) {
             return ResponseCodes.DB_ERROR;
         }
         return ResponseCodes.OK;
+    }
+
+    public Integer statusCount() {
+//        try {
+            return postDAO.count();
+//        }
+//        catch (DataAccessException dAx) {
+//            return ResponseCodes.DB_ERROR;
+//        }
+//        return ResponseCodes.OK;
     }
 }

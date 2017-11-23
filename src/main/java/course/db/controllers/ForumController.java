@@ -1,6 +1,9 @@
 package course.db.controllers;
 
+import course.db.managers.ResponseCodes;
+import course.db.managers.ThreadManager;
 import course.db.models.ForumModel;
+import course.db.models.ThreadModel;
 import course.db.views.AbstractView;
 import course.db.views.ErrorView;
 import course.db.views.ForumView;
@@ -11,30 +14,67 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path="/forum")
 public class ForumController extends AbstractController {
     @RequestMapping(path="/create", method= RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
     produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AbstractView> createForum(@RequestBody ForumView forumView) {
-        try {
-//            forumDAO.create(new ForumModel(forumView));
+        ResponseCodes responseCode = forumManager.create(new ForumModel(forumView));
+        switch(responseCode) {
+            case OK:
+                return new ResponseEntity<>(forumView, null, HttpStatus.CREATED); //
+            case NO_RESULT:
+                return new ResponseEntity<>(new ErrorView("No such user"), null, HttpStatus.NOT_FOUND);
+            case CONFILICT:
+                ForumModel existingForum = new ForumModel();
+                existingForum.setSlug(forumView.getSlug());
+                ResponseCodes responseCode1 = forumManager.findForum(existingForum);
+                if (responseCode == ResponseCodes.DB_ERROR)
+                    return new ResponseEntity<>(new ErrorView("Error db"), null, HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<AbstractView>(existingForum.toForumView(), null, HttpStatus.CONFLICT);
+            default:
+                return new ResponseEntity<>(new ErrorView("Error db"), null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        catch (DuplicateKeyException ex) {
-
-        }
-        return  ResponseEntity.status(HttpStatus.OK).body(new ErrorView(""));
     }
 
     @RequestMapping(path="/{slug}/details", method= RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AbstractView> getBranchDetails(@PathVariable(value="slug") String slug) {
-        return  ResponseEntity.status(HttpStatus.OK).body(new ErrorView(""));
+        ForumModel forumModel = new ForumModel();
+        forumModel.setSlug(slug);
+        ResponseCodes responseCode = forumManager.findForum(forumModel);
+        switch(responseCode) {
+            case OK:
+                return new ResponseEntity<>(forumModel.toForumView(), null, HttpStatus.CREATED); //
+            case NO_RESULT:
+                return new ResponseEntity<>(new ErrorView("No such foru"), null, HttpStatus.NOT_FOUND);
+            default:
+                return new ResponseEntity<>(new ErrorView("Error db"), null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @RequestMapping(path="/{slug}/create", method= RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AbstractView> createBranch(@PathVariable(value="slug") String slug, @RequestBody ThreadView threadView) {
-        return  ResponseEntity.status(HttpStatus.OK).body(new ErrorView(""));
+        ResponseCodes responseCode = forumManager.createThread(new ThreadModel(threadView));
+        switch(responseCode) {
+            case OK:
+                return new ResponseEntity<>(threadView, null, HttpStatus.CREATED); //
+            case NO_RESULT:
+                return new ResponseEntity<>(new ErrorView("No such user"), null, HttpStatus.NOT_FOUND);
+            case CONFILICT:
+                ForumModel existingForum = new ForumModel();
+                existingForum.setSlug(threadView.getSlug());
+//                ResponseCodes responseCode1 = threadManager.findForum(existingForum);
+                if (responseCode == ResponseCodes.DB_ERROR)
+                    return new ResponseEntity<>(new ErrorView("Error db"), null, HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<AbstractView>(existingForum.toForumView(), null, HttpStatus.CONFLICT);
+            default:
+                return new ResponseEntity<>(new ErrorView("Error db"), null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     @RequestMapping(path="/{slug}/users", method= RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

@@ -18,6 +18,7 @@ public class ForumView implements AbstractView {
         this.slug = slug;
     }
 
+    public ForumView() {}
     public ForumView(String title, String user, String slug, Integer posts, Integer threads){
         this.title = title;
         this.user = user;

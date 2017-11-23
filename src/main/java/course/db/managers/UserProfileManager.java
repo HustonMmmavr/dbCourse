@@ -75,9 +75,8 @@ public class UserProfileManager {
         return ResponseCodes.OK;
     }
 
-    public ResponseCodes statusClear(Integer count) {
+    public ResponseCodes statusClear() {
         try {
-            count = userProfileDAO.count();
             userProfileDAO.clear();
         }
         catch (DataAccessException dAx) {
@@ -86,5 +85,14 @@ public class UserProfileManager {
         return ResponseCodes.OK;
     }
 
+    public Integer statusCount() {
+//        try {
+            return userProfileDAO.count();
+//        }
+//        catch (DataAccessException dAx) {
+//            return ResponseCodes.DB_ERROR;
+//        }
+//        return ResponseCodes.OK;
+    }
 
 }
