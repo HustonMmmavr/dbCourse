@@ -2,6 +2,7 @@ package course.db.dao;
 
 import course.db.models.ForumModel;
 import course.db.models.ThreadModel;
+import course.db.models.UserProfileModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -15,14 +16,18 @@ public class AbstractDAO {
     public Integer count() {return 0;}
 
     //(Integer votes, Integer id, String title, String author, String message, String created, String forum, Str
-    protected RowMapper<ThreadModel> _getThread = (rs, rowNum) -> new ThreadModel(
+    protected RowMapper<ThreadModel> _getThreadModel = (rs, rowNum) -> new ThreadModel(
             rs.getInt("votes"), rs.getInt("id"), rs.getString("title"), rs.getString("nickname"),
             rs.getString("message"), rs.getString("created"), rs.getString("forum_slug"),rs.getString("thread_slug")
     );
 
-    protected RowMapper<ForumModel> _getForumBySlug = (rs, rowNum) -> new ForumModel(
+    protected RowMapper<ForumModel> _getForumModel = (rs, rowNum) -> new ForumModel(
             rs.getString("title"), rs.getString("nickname"), rs.getString("slug"), rs.getInt("posts"),
             rs.getInt("threads"));
+
+    RowMapper<UserProfileModel> _getUserModel = (rs, rowNum) ->
+            new UserProfileModel(rs.getString("nickname"), rs.getString("fullname"),
+                    rs.getString("about"), rs.getString("email"));
 
 
 }

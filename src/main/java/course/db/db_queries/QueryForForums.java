@@ -27,12 +27,22 @@ public class QueryForForums {
     }
 
     //TODO maybe subqu, denormalize
-    static public String findThread(){
+    static public String findThreads(){
         return "SELECT _user.nickname, forum.slug as forum_slug, thread.id, thread.slug as thread_slug," +
                 "thread.created, thread.title, thread.message, thread.votes " +
                 "FROM threads thread JOIN userprofiles _user ON (thread.author_id = _user.id)" +
                 "JOIN forums forum ON (thread.forum_id = forum.id)" +
                 "WHERE forum.slug = ? ";
+    }
+
+
+    // TODO anot
+    static public String findUsers() {
+        return "SELECT _user.id, _user.nickname, _user.about, _user.fullname, _user.email" +
+                "FROM userprofiles _user JOIN forums forum ON(forum.owner_id=_user.id) " +
+                "JOIN threads thread ON (thread.author_id=_user.id) " +
+                "JOIN posts post ON (post.author_id=_user.id)" +
+                "WHERE forum.id = ? OR post.forum_id=? OR thread.forum_id=?";
     }
 
     static public String incThreadCount() {

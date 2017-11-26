@@ -20,10 +20,6 @@ public class UserProfileDAO extends AbstractDAO {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    RowMapper<UserProfileModel> getUserView = (rs, rowNum) ->
-            new UserProfileModel(rs.getString("nickname"), rs.getString("fullname"),
-                    rs.getString("about"), rs.getString("email"));
-
     @Autowired
     public UserProfileDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -36,7 +32,7 @@ public class UserProfileDAO extends AbstractDAO {
 
     public UserProfileModel getUserByNick(String nickname) {
         return jdbcTemplate.queryForObject(QueryForUserProfile.getUserByNickOrEmail(),
-                new Object[] {nickname, null}, getUserView);
+                new Object[] {nickname, null}, _getUserModel);
     }
 
     public Integer change(UserProfileModel userProfileModel) {
@@ -69,7 +65,7 @@ public class UserProfileDAO extends AbstractDAO {
 
     public List<UserProfileModel> getUsersByNickOrEmail(String nickname, String email) {
         return jdbcTemplate.query(QueryForUserProfile.getUserByNickOrEmail(),
-                new Object[] {nickname, email}, getUserView);
+                new Object[] {nickname, email}, _getUserModel);
     }
 
     @Override

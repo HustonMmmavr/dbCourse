@@ -79,8 +79,8 @@ public class ForumController extends AbstractController {
         }
     }
 
-    @RequestMapping(path="/{slug}/users", method= RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> getUsers(@PathVariable(value="slug") String slug,
+    @RequestMapping(path="/{slug}/threads", method= RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> getThreads(@PathVariable(value="slug") String slug,
                                                  @RequestParam(value="limit",required = false) Integer limit,
                                                  @RequestParam(value="since",required = false) String since,
                                                  @RequestParam(value="desc",required = false) Boolean desc
@@ -98,7 +98,7 @@ public class ForumController extends AbstractController {
         }
 
         List<ThreadView> threadViewList = new ArrayList<>();
-        ResponseCodes responseCode1 = forumManager.findThreads(forumModel, threadViewList);
+        ResponseCodes responseCode1 = forumManager.findThreads(forumModel, limit, since, desc, threadViewList);
         switch (responseCode1) {
             case NO_RESULT:
                 return new ResponseEntity<>(new ErrorView("No such user"), null, HttpStatus.NOT_FOUND);
@@ -111,8 +111,8 @@ public class ForumController extends AbstractController {
 
     }
 
-    @RequestMapping(path="/{slug}/threads", method= RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> getThreads(@PathVariable(value="slug") String slug,
+    @RequestMapping(path="/{slug}/users", method= RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> getUsers(@PathVariable(value="slug") String slug,
                                                    @RequestParam(value="limit",required = false) Integer limit,
                                                    @RequestParam(value="since",required = false) String since,
                                                    @RequestParam(value="desc",required = false) Boolean desc
@@ -129,8 +129,10 @@ public class ForumController extends AbstractController {
                 break;
         }
 
+        // TODO make table users forums
+
         List<UserProfileView> userProfileList = new ArrayList<>();
-        ResponseCodes responseCode1 = forumManager.findUsers(forumModel, userProfileList);
+        ResponseCodes responseCode1 = forumManager.findUsers(forumModel, limit, since, desc, userProfileList);
         switch (responseCode1) {
             case NO_RESULT:
                 return new ResponseEntity<>(new ErrorView("No such user"), null, HttpStatus.NOT_FOUND);

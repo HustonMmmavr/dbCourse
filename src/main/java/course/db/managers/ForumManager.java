@@ -4,6 +4,7 @@ import com.sun.org.apache.regexp.internal.RE;
 import course.db.dao.ForumDAO;
 import course.db.models.ForumModel;
 import course.db.models.ThreadModel;
+import course.db.models.UserProfileModel;
 import course.db.views.ForumView;
 import course.db.views.ThreadView;
 import course.db.views.UserProfileView;
@@ -85,8 +86,13 @@ public class ForumManager {
         return ResponseCodes.OK;
     }
 
-    public ResponseCodes findThreads(ForumModel forumModel, List<ThreadView> threadViewList) {
+    public ResponseCodes findThreads(ForumModel forumModel, Integer limit, String since, Boolean desc,
+                                     List<ThreadView> threadViewList) {
         try {
+            List<ThreadModel> userProfileModels = forumDAO.getThreads(forumModel.getSlug(), limit, since, desc);
+            for (ThreadModel model : userProfileModels) {
+                threadViewList.add(model.toView());
+            }
 
         }
         catch (EmptyResultDataAccessException e) {
@@ -98,9 +104,13 @@ public class ForumManager {
         return ResponseCodes.OK;
     }
 
-    public ResponseCodes findUsers(ForumModel forumModel, List<UserProfileView> userProfileViewList) {
+    public ResponseCodes findUsers(ForumModel forumModel, Integer limit, String since, Boolean desc,
+                                   List<UserProfileView> userProfileViewList) {
         try {
-
+            List<UserProfileModel> userProfileModels = forumDAO.getUsers(forumModel.getSlug(), limit, since, desc);
+            for (UserProfileModel model : userProfileModels) {
+                userProfileViewList.add(model.toView());
+            }
         }
         catch (EmptyResultDataAccessException e) {
             return ResponseCodes.NO_RESULT;

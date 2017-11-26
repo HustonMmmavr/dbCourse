@@ -7,6 +7,7 @@ import course.db.db_queries.QueryForUserProfile;
 import course.db.managers.ResponseCodes;
 import course.db.models.ForumModel;
 import course.db.models.ThreadModel;
+import course.db.models.UserProfileModel;
 import course.db.views.ForumView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -16,6 +17,9 @@ import org.springframework.jmx.export.annotation.ManagedNotification;
 import org.springframework.stereotype.Repository;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Repository
 public class ForumDAO extends AbstractDAO {
@@ -32,14 +36,35 @@ public class ForumDAO extends AbstractDAO {
     }
 
     public ForumModel getForumBySlug(String slug) {
-        return jdbcTemplate.queryForObject(QueryForForums.findForumBySlug(), new Object[] {slug}, _getForumBySlug);
+        return jdbcTemplate.queryForObject(QueryForForums.findForumBySlug(), new Object[] {slug}, _getForumModel);
     }
 
-    public void getThreads() {
+    // TODO tr
+    public List<UserProfileModel> getUsers(String slug, Integer limit, String since, Boolean desc) {
+        StringBuilder builder = new StringBuilder(QueryForForums.findUsers());
+        int forumId = jdbcTemplate.queryForObject(QueryForForums.findForumIdBySlug(), new Object[] {slug}, Integer.class);
+        List<Object> list = new ArrayList<>();
+        list.add(forumId);
 
+        if (since != null) {
+            builder.append("AND _user.nickname" + (desc == Boolean.TRUE  ? "< ? " : "> ?"));
+            list.add(since);
+        }
+
+        builder.append("ORDER by _user.nickname" + (desc == Boolean.TRUE  ? "DESC" : ""));
+
+        if (limit != null) {
+            builder.append("LIMIT ?");
+            list.add(limit);
+        }
+        return jdbcTemplate.query(QueryForForums.findUsers(), list.toArray(),
+                _getUserModel);
     }
 
-    public void getUsers() {
+    public List<ThreadModel> getThreads(String slug, Integer limit, String since, Boolean desc) {
+        int forumId = jdbcTemplate.queryForObject(QueryForForums.findForumIdBySlug(), new Object[] {slug}, Integer.class);
+        return jdbcTemplate.query(QueryForForums.findThreads(), new Object[] {forumId},
+                _getThreadModel);
 
     }
 

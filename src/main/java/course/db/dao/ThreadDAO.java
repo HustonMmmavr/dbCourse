@@ -19,9 +19,6 @@ public class ThreadDAO extends AbstractDAO {
     @NotNull
     JdbcTemplate jdbcTemplate;
 
-//    private RowMapper<ThreadModel> _getThread = (rs, rowNum) -> new ThreadModel(
-//    );
-
     @Autowired
     public ThreadDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -45,7 +42,7 @@ public class ThreadDAO extends AbstractDAO {
         }
         int res = jdbcTemplate.update(QueryForForums.incThreadCount(), new Object[] {forumId});
 
-        return jdbcTemplate.queryForObject(QueryForForums.findThread(), new Object[] {threadModel.getSlug()}, _getThread);
+        return jdbcTemplate.queryForObject(QueryForForums.findThreads(), new Object[] {threadModel.getSlug()}, _getThreadModel);
     }
 
 //    public ThreadModel createByForum(ThreadModel threadModel) {
@@ -67,7 +64,7 @@ public class ThreadDAO extends AbstractDAO {
 //    }
 
     public ThreadModel findThread(ThreadModel threadModel) {
-        return jdbcTemplate.queryForObject(QueryForForums.findThread(), new Object[] {threadModel.getSlug()}, _getThread);
+        return jdbcTemplate.queryForObject(QueryForForums.findThreads(), new Object[] {threadModel.getSlug()}, _getThreadModel);
     }
 
     @Override
