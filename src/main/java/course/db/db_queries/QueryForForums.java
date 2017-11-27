@@ -38,11 +38,16 @@ public class QueryForForums {
 
     // TODO anot
     static public String findUsers() {
-        return "SELECT _user.id, _user.nickname, _user.about, _user.fullname, _user.email" +
-                "FROM userprofiles _user JOIN forums forum ON(forum.owner_id=_user.id) " +
-                "JOIN threads thread ON (thread.author_id=_user.id) " +
-                "JOIN posts post ON (post.author_id=_user.id)" +
-                "WHERE forum.id = ? OR post.forum_id=? OR thread.forum_id=?";
+        return "SELECT DISTINCT _user.id, _user.nickname, _user.about, _user.fullname, _user.email " +
+                "FROM forums forum JOIN threads thread ON (thread.forum_id=forum.id) " +
+                "JOIN posts post ON (forum.id = post.forum_id) " +
+                "JOIN userprofiles _user ON (_user.id=forum.owner_id OR _user.id = thread.author_id OR _user.id=post.author_id) " +
+                "WHERE forum.id = ? OR post.forum_id=? OR thread.forum_id=? ";
+//        return "SELECT _user.id, _user.nickname, _user.about, _user.fullname, _user.email " +
+//                "FROM userprofiles _user JOIN forums forum ON(forum.owner_id=_user.id) " +
+//                "JOIN threads thread ON (thread.author_id=_user.id) " +
+//                "JOIN posts post ON (post.author_id=_user.id) " +
+//                "WHERE forum.id = ? OR post.forum_id=? OR thread.forum_id=? ";
     }
 
     static public String incThreadCount() {

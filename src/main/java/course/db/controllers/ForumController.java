@@ -141,7 +141,7 @@ public class ForumController extends AbstractController {
             default:
                 break;
         }
-        return new ResponseEntity<>(userProfileList, null, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(userProfileList, null, HttpStatus.OK);
 
 //        return  ResponseEntity.status(HttpStatus.OK).body(new ErrorView(""));
     }

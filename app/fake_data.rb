@@ -142,9 +142,9 @@ class MakeFake
         con.close
         @con = PG.connect :host => host, :port => port, :user => uname, :password => password, :dbname => dbname
 
-        citext_exist=@con.query("SELECT 1 FROM pg_available_extensions WHERE name='citext'")
+        #citext_exist=@con.query("SELECT 1 FROM pg_available_extensions WHERE name='citext'")
         #``@if citext_exist.ntuples.zero?
-          @con.exec(@queries.citext)
+        #  @con.exec(@queries.citext)
         #end
 
         tables=get_tables

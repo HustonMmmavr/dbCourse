@@ -45,19 +45,21 @@ public class ForumDAO extends AbstractDAO {
         int forumId = jdbcTemplate.queryForObject(QueryForForums.findForumIdBySlug(), new Object[] {slug}, Integer.class);
         List<Object> list = new ArrayList<>();
         list.add(forumId);
+        list.add(forumId);
+        list.add(forumId);
 
         if (since != null) {
-            builder.append("AND _user.nickname" + (desc == Boolean.TRUE  ? "< ? " : "> ?"));
+            builder.append(" AND _user.nickname " + (desc == Boolean.TRUE  ? "< ? " : "> ? "));
             list.add(since);
         }
 
-        builder.append("ORDER by _user.nickname" + (desc == Boolean.TRUE  ? "DESC" : ""));
+        builder.append("ORDER by _user.nickname " + (desc == Boolean.TRUE  ? "DESC " : " "));
 
         if (limit != null) {
-            builder.append("LIMIT ?");
+            builder.append("LIMIT ? ");
             list.add(limit);
         }
-        return jdbcTemplate.query(QueryForForums.findUsers(), list.toArray(),
+        return jdbcTemplate.query(builder.toString(), list.toArray(),
                 _getUserModel);
     }
 
