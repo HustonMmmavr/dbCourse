@@ -130,7 +130,7 @@ public class ForumController extends AbstractController {
         }
 
         // TODO make table users forums
-
+        // time
         List<UserProfileView> userProfileList = new ArrayList<>();
         ResponseCodes responseCode1 = forumManager.findUsers(forumModel, limit, since, desc, userProfileList);
         switch (responseCode1) {

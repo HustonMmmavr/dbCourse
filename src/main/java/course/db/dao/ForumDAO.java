@@ -17,8 +17,11 @@ import org.springframework.jmx.export.annotation.ManagedNotification;
 import org.springframework.stereotype.Repository;
 
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 
 @Repository
@@ -65,9 +68,35 @@ public class ForumDAO extends AbstractDAO {
 
     public List<ThreadModel> getThreads(String slug, Integer limit, String since, Boolean desc) {
         int forumId = jdbcTemplate.queryForObject(QueryForForums.findForumIdBySlug(), new Object[] {slug}, Integer.class);
-        return jdbcTemplate.query(QueryForForums.findThreads(), new Object[] {forumId},
+        StringBuilder builder = new StringBuilder(QueryForForums.findThreadsById());
+        List<Object> list = new ArrayList<>();
+        list.add(forumId);
+
+        //since=" 2017-11-27 22:54:55.047629+03";
+        if (since != null) {
+            builder.append(" AND thread.created " + (desc == Boolean.TRUE  ? " <= ? " : " >= ? "));
+//                    "< to_timestamp(?," +
+//                    " 'yyyy-MM-dd\'T\'HH:mm:ss.SSS\'Z\'') " : "> to_timestamp(?, 'yyyy-MM-dd\'T\'HH:mm:ss.SSS\'Z\'') "));
+            //final Timestamp timestamp = new Timestamp(since);
+            final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+           // list.add(dateFormat.get);
+        }
+
+        builder.append("ORDER by thread.created " + (desc == Boolean.TRUE  ? "DESC " : " "));
+
+        if (limit != null) {
+            builder.append("LIMIT ? ");
+            list.add(limit);
+        }
+
+        List<ThreadModel> models = jdbcTemplate.query(builder.toString(), list.toArray(new Object[list.size()]),
                 _getThreadModel);
 
+        for (ThreadModel model : models) {
+            model.setForum(slug);
+        }
+        return models;
     }
 
     @Override
