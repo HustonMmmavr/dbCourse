@@ -26,7 +26,7 @@ public class PostManager {
 
     public ResponseCodes updatePost(PostModel postModel) {
         try {
-            PostModel model = postDAO.findById(postModel.getId());
+            PostModel model = postDAO.updatePost(postModel);
             postModel.copy(model);
         }
         catch (DuplicateKeyException ex) {

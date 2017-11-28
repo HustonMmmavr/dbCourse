@@ -8,6 +8,8 @@ public class PostDetailsModel {
     ThreadModel thread;
     ForumModel forum;
 
+    public PostDetailsModel() {}
+
     public PostDetailsModel(UserProfileModel author, PostModel post, ThreadModel thread, ForumModel forum) {
         this.author = author;
         this.post = post;

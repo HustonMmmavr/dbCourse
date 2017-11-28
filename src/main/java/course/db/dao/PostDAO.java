@@ -24,12 +24,13 @@ public class PostDAO extends AbstractDAO {
     }
 
     public PostModel findById(Integer id) {
+        PostModel postModel = jdbcTemplate.queryForObject(QueryForPost.getById(), new Object[] {id}, _getPostModel);
         return new PostModel();
     }
 
-    public PostModel updatePost(PostModel newModel) {
-        return new PostModel();
-    }
+//    public PostModel updatePost(PostModel newModel) {
+//        return new PostModel();
+//    }
 
     public PostDetailsModel getDetails(Integer id, String[] args) {
         PostModel postModel = jdbcTemplate.queryForObject(QueryForPost.getById(), new Object[] {id}, _getPostModel);
@@ -52,6 +53,21 @@ public class PostDAO extends AbstractDAO {
             }
         }
         return new PostDetailsModel(userProfileModel, postModel, threadModel, forumModel);
+    }
+
+    public PostModel updatePost(PostModel old) {
+        PostModel postModel = jdbcTemplate.queryForObject(QueryForPost.getById(), new Object[] {old.getId()}, _getPostModel);
+//        final PostModel post = findById(id);
+        String message = old.getMessage();
+        StringBuilder builder = new StringBuilder("UPDATE posts SET message = ?");
+        if (!message.equals(postModel.getMessage())) {
+            builder.append(", is_edited = TRUE");
+            postModel.setEdited(true);
+            postModel.setMessage(message);
+        }
+        builder.append(" WHERE id = ?");
+        jdbcTemplate.update(builder.toString(), message, old.getId());
+        return postModel;
     }
 
     @Override

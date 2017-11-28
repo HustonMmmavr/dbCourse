@@ -1,6 +1,7 @@
 package course.db.controllers;
 
 import course.db.managers.ResponseCodes;
+import course.db.models.PostDetailsModel;
 import course.db.models.PostModel;
 import course.db.views.AbstractView;
 import course.db.views.ErrorView;
@@ -15,14 +16,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path="/post")
 public class PostController extends AbstractController {
     @RequestMapping(path="/{id}/details", method= RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AbstractView> getDetails(@PathVariable(value="id") String stringId,
+    public ResponseEntity<AbstractView> getDetails(@PathVariable(value="id") Integer id,
                                                    @RequestParam(value="related", required = false) String[] related) {
-        PostModel postModel = new PostModel();
-        postModel.setId(new Integer(stringId));
-        ResponseCodes responseCode = postManager.findPostById(postModel);//(forumModel);
+        PostDetailsModel postDetailsModel = new PostDetailsModel();
+        ResponseCodes responseCode = postManager.findPostDetailsById(id, related, postDetailsModel);//(forumModel);
         switch(responseCode) {
             case OK:
-                return new ResponseEntity<>(postModel.toView(), null, HttpStatus.CREATED); //
+                return new ResponseEntity<>(postDetailsModel.toView(), null, HttpStatus.CREATED); //
             case NO_RESULT:
                 return new ResponseEntity<>(new ErrorView("No such foru"), null, HttpStatus.NOT_FOUND);
             default:
@@ -32,8 +32,8 @@ public class PostController extends AbstractController {
 
     @RequestMapping(path="/{id}/details", method= RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AbstractView> setDetails(@PathVariable(value="id") String id, @RequestBody PostView postDetailsView) {
-        PostModel postModel = new PostModel(postDetailsView);
+    public ResponseEntity<AbstractView> setDetails(@PathVariable(value="id") String id, @RequestBody PostView postView) {
+        PostModel postModel = new PostModel(postView);
         postModel.setId(new Integer(id));
         ResponseCodes responseCode = postManager.updatePost(postModel);//(forumModel);
         switch(responseCode) {
