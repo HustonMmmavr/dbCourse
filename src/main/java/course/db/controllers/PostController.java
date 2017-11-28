@@ -35,14 +35,19 @@ public class PostController extends AbstractController {
     public ResponseEntity<AbstractView> setDetails(@PathVariable(value="id") String id, @RequestBody PostView postView) {
         PostModel postModel = new PostModel(postView);
         postModel.setId(new Integer(id));
-        ResponseCodes responseCode = postManager.updatePost(postModel);//(forumModel);
+
+        ResponseCodes responseCode;
+        if (postModel.getMessage() != null)
+            responseCode = postManager.updatePost(postModel);//(forumModel);
+        else
+            responseCode = postManager.findById(postModel);
         switch(responseCode) {
             case OK:
                 return new ResponseEntity<>(postModel.toView(), null, HttpStatus.CREATED); //
             case NO_RESULT:
                 return new ResponseEntity<>(new ErrorView("No such foru"), null, HttpStatus.NOT_FOUND);
-            case CONFILICT:
-                return new ResponseEntity<>(new ErrorView("conflict"), null, HttpStatus.CONFLICT);
+//            case CONFILICT:
+//                return new ResponseEntity<>(new ErrorView("conflict"), null, HttpStatus.CONFLICT);
             default:
                 return new ResponseEntity<>(new ErrorView("Error db"), null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

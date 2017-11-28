@@ -20,9 +20,22 @@ public class PostManager {
     @Autowired
     public PostManager(@NotNull PostDAO postDAO) {this.postDAO = postDAO;}
 
-//    public ResponseCodes findPostById(Integer id, PostModel model) {
-//        return ResponseCodes.OK;
-//    }
+    public ResponseCodes findById(PostModel postModel) {
+        try {
+            PostModel model = postDAO.findById(postModel.getId());
+            postModel.copy(model);
+        }
+        catch (DuplicateKeyException ex) {
+            return ResponseCodes.CONFILICT;
+        }
+        catch (EmptyResultDataAccessException dAx) {
+            return ResponseCodes.NO_RESULT;
+        }
+        catch (DataAccessException dAx) {
+            return ResponseCodes.DB_ERROR;
+        }
+        return ResponseCodes.OK;
+    }
 
     public ResponseCodes updatePost(PostModel postModel) {
         try {

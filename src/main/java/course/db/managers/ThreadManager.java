@@ -57,14 +57,14 @@ public class ThreadManager {
         try {
             ThreadModel createdThread =  threadDAO.createThread(threadModel);
             threadModel.copy(createdThread);
-            threadModel.setAuthor(createdThread.getAuthor());
-            threadModel.setCreated(createdThread.getCreated());
-            threadModel.setId(createdThread.getId());
-            threadModel.setForum(createdThread.getForum());
-            threadModel.setSlug(createdThread.getSlug());
-            threadModel.setMessage(createdThread.getMessage());
-            threadModel.setTitle(createdThread.getTitle());
-            threadModel.setVotes(createdThread.getVotes());
+//            threadModel.setAuthor(createdThread.getAuthor());
+//            threadModel.setCreated(createdThread.getCreated());
+//            threadModel.setId(createdThread.getId());
+//            threadModel.setForum(createdThread.getForum());
+//            threadModel.setSlug(createdThread.getSlug());
+//            threadModel.setMessage(createdThread.getMessage());
+//            threadModel.setTitle(createdThread.getTitle());
+//            threadModel.setVotes(createdThread.getVotes());
 //           threadModel;
             //TODO fill data from
         }
