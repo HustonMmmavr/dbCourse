@@ -15,6 +15,11 @@ public class QueryForThread {
                 "VALUES(?, ?, ?,  NOW(), ?, ?, ?)";
     }
 
+    // not correct
+    static public String findById() {
+        return "SELECT * FROM threads WHERE id = ?";
+    }
+
     static public String createWithDate() {
         return "INSERT INTO threads (author_id, forum_id, title, created, message, votes, slug)" +
                 "VALUES(?, ?, ?, ?, ?, ?, ?)";

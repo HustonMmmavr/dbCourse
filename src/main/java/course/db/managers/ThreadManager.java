@@ -56,7 +56,7 @@ public class ThreadManager {
     public ResponseCodes createThread (ThreadModel threadModel) {
         try {
             ThreadModel createdThread =  threadDAO.createThread(threadModel);
-
+            threadModel.copy(createdThread);
             threadModel.setAuthor(createdThread.getAuthor());
             threadModel.setCreated(createdThread.getCreated());
             threadModel.setId(createdThread.getId());

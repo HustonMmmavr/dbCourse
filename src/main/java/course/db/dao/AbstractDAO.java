@@ -1,6 +1,7 @@
 package course.db.dao;
 
 import course.db.models.ForumModel;
+import course.db.models.PostModel;
 import course.db.models.ThreadModel;
 import course.db.models.UserProfileModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,12 @@ public class AbstractDAO {
             rs.getString("title"), rs.getString("nickname"), rs.getString("slug"), rs.getInt("posts"),
             rs.getInt("threads"));
 
-    RowMapper<UserProfileModel> _getUserModel = (rs, rowNum) ->
+
+    protected RowMapper<PostModel> _getPostModel = (rs, rowNum) -> new PostModel(
+
+    );
+
+    protected RowMapper<UserProfileModel> _getUserModel = (rs, rowNum) ->
             new UserProfileModel(rs.getString("nickname"), rs.getString("fullname"),
                     rs.getString("about"), rs.getString("email"));
 

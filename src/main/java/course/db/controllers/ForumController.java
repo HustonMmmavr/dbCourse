@@ -134,14 +134,13 @@ public class ForumController extends AbstractController {
         List<UserProfileView> userProfileList = new ArrayList<>();
         ResponseCodes responseCode1 = forumManager.findUsers(forumModel, limit, since, desc, userProfileList);
         switch (responseCode1) {
+            case OK:
+                return new ResponseEntity<>(userProfileList, null, HttpStatus.OK);
             case NO_RESULT:
                 return new ResponseEntity<>(new ErrorView("No such user"), null, HttpStatus.NOT_FOUND);
-            case DB_ERROR:
-                return new ResponseEntity<>(new ErrorView("Error db"), null, HttpStatus.INTERNAL_SERVER_ERROR);
             default:
-                break;
+                return new ResponseEntity<>(new ErrorView("Error db"), null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(userProfileList, null, HttpStatus.OK);
 
 //        return  ResponseEntity.status(HttpStatus.OK).body(new ErrorView(""));
     }
