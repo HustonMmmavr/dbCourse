@@ -35,7 +35,7 @@ public class ForumController extends AbstractController {
                 ResponseCodes responseCode1 = forumManager.findForum(existingForum);
                 if (responseCode1 == ResponseCodes.DB_ERROR)
                     return new ResponseEntity<>(new ErrorView("Error db"), null, HttpStatus.INTERNAL_SERVER_ERROR);
-                return new ResponseEntity<AbstractView>(existingForum.toForumView(), null, HttpStatus.CONFLICT);
+                return new ResponseEntity<AbstractView>(existingForum.toView(), null, HttpStatus.CONFLICT);
             default:
                 return new ResponseEntity<>(new ErrorView("Error db"), null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -48,7 +48,7 @@ public class ForumController extends AbstractController {
         ResponseCodes responseCode = forumManager.findForum(forumModel);
         switch(responseCode) {
             case OK:
-                return new ResponseEntity<>(forumModel.toForumView(), null, HttpStatus.CREATED); //
+                return new ResponseEntity<>(forumModel.toView(), null, HttpStatus.CREATED); //
             case NO_RESULT:
                 return new ResponseEntity<>(new ErrorView("No such foru"), null, HttpStatus.NOT_FOUND);
             default:

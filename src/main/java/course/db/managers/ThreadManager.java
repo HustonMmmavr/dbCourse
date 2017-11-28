@@ -39,6 +39,38 @@ public class ThreadManager {
 //        return ResponseCodes.OK;
 //    }
 
+
+    public ResponseCodes findThreadBySlugOrId(ThreadModel threadModel) {
+        try {
+            ThreadModel model = threadDAO.findBySlugOrId(threadModel);
+            threadModel.copy(model);
+        }
+        catch (EmptyResultDataAccessException e) {
+            return ResponseCodes.NO_RESULT;
+        }
+        catch (DataAccessException d) {
+            return ResponseCodes.DB_ERROR;
+        }
+        return ResponseCodes.OK;
+    }
+
+    public ResponseCodes updateThread(ThreadModel threadModel) {
+        try {
+            ThreadModel existingThread = threadDAO.updateThread(threadModel);
+            threadModel.copy(existingThread);
+        }
+        catch (DuplicateKeyException d) {
+            return ResponseCodes.CONFILICT;
+        }
+        catch (EmptyResultDataAccessException em) {
+            return ResponseCodes.NO_RESULT;
+        }
+        catch (DataAccessException d) {
+            return ResponseCodes.DB_ERROR;
+        }
+        return ResponseCodes.OK;
+    }
+
     public ResponseCodes findThread(ThreadModel threadModel) {
         try {
             ThreadModel existingThread = threadDAO.findThread(threadModel);

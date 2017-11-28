@@ -27,7 +27,7 @@ public class ForumModel {
         this.title = forumView.getTitle();
     }
 
-    public ForumView toForumView(){
+    public ForumView toView(){
         final ForumView forumView = new ForumView(title,user, slug, posts, threads);
         return forumView;
     }
