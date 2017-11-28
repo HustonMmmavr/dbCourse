@@ -17,11 +17,13 @@ public class ThreadController extends AbstractController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AbstractView> createPosts(@RequestBody ArrayList<PostView> posts,
                                                      @PathVariable(value = "slug_or_id") String slug_or_id) {
-        return new ResponseEntity<>(new ErrorView("f"), null, HttpStatus.OK);
+        final ThreadModel threadModel = new ThreadModel();
+        checkAndSetSlugOrId(slug_or_id, threadModel);
 
+        return new ResponseEntity<>(new ErrorView("f"), null, HttpStatus.OK);
     }
 
-    private void checkAndSetSlugOrId(String slug_or_id, ThreadModel threadModel) {
+     private void checkAndSetSlugOrId(String slug_or_id, ThreadModel threadModel) {
         try {
             int id = new Integer(slug_or_id);
             threadModel.setId(id);
@@ -75,13 +77,15 @@ public class ThreadController extends AbstractController {
                                                  @RequestParam(value="sort",required = false) String sort,
                                                  @RequestParam(value="desc",required = false) Boolean desc) {
         return new ResponseEntity<>(new ErrorView("f"), null, HttpStatus.OK);
-
+        // TODO there sort
     }
 
     
     @RequestMapping(path="/{slug_or_id}/vote", method= RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AbstractView> voteThread(@RequestBody VoteView voteView) {
+
+        // TODO there vote
         return new ResponseEntity(new ErrorView(""), null, HttpStatus.NOT_FOUND);
     }
 }

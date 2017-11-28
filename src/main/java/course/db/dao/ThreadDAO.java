@@ -13,6 +13,8 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class ThreadDAO extends AbstractDAO {
@@ -45,12 +47,37 @@ public class ThreadDAO extends AbstractDAO {
         return jdbcTemplate.queryForObject(QueryForForums.findThreads(), new Object[] {threadModel.getSlug()}, _getThreadModel);
     }
 
-    public ThreadModel updateThread(ThreadModel threadModel) {
-        return new ThreadModel();
+    public void updateThread(ThreadModel threadModel) {
+        StringBuilder builder = new StringBuilder("UPDATE threads SET");
+        List<Object> args = new ArrayList<>();
+        if (threadModel.getMessage() != null) {
+            builder.append(" message = ?,");
+            args.add(threadModel.getMessage());
+        }
+
+        if (threadModel.getTitle() != null) {
+            builder.append(" title = ?,");
+            args.add(threadModel.getTitle());
+        }
+
+        if (!args.isEmpty()) {
+            builder.delete(builder.length() - 1, builder.length());
+            if (threadModel.getId() != null) {
+                builder.append(" WHERE id = ?");
+                args.add(threadModel.getId());
+            }
+            else {
+                builder.append(" WHERE slug = ?");
+                args.add(threadModel.getTitle());
+            }
+            jdbcTemplate.update(builder.toString(), args.toArray());
+        }
     }
 
+
     public ThreadModel findBySlugOrId(ThreadModel threadModel) {
-        return new ThreadModel();
+        return jdbcTemplate.queryForObject(QueryForThread.findBySlugOrId(), new Object[]
+                {threadModel.getId(), threadModel.getTitle()}, _getThreadModel);
     }
 
 //    public ThreadModel createByForum(ThreadModel threadModel) {

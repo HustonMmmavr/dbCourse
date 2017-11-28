@@ -56,8 +56,9 @@ public class ThreadManager {
 
     public ResponseCodes updateThread(ThreadModel threadModel) {
         try {
-            ThreadModel existingThread = threadDAO.updateThread(threadModel);
-            threadModel.copy(existingThread);
+            threadDAO.updateThread(threadModel);
+            ThreadModel newThreadModel = threadDAO.findBySlugOrId(threadModel);
+            threadModel.copy(newThreadModel);
         }
         catch (DuplicateKeyException d) {
             return ResponseCodes.CONFILICT;
@@ -71,7 +72,7 @@ public class ThreadManager {
         return ResponseCodes.OK;
     }
 
-    public ResponseCodes findThread(ThreadModel threadModel) {
+    public ResponseCodes findThreadBySlug(ThreadModel threadModel) {
         try {
             ThreadModel existingThread = threadDAO.findThread(threadModel);
             threadModel.copy(existingThread);

@@ -23,7 +23,7 @@ public class ForumController extends AbstractController {
         ResponseCodes responseCode = forumManager.create(new ForumModel(forumView));
         switch(responseCode) {
             case OK:
-                // TODO read from db
+                // TODO read from db //maybe
                 forumView.setPosts(0);
                 forumView.setThreads(0);
                 return new ResponseEntity<>(forumView, null, HttpStatus.CREATED); //
@@ -70,8 +70,8 @@ public class ForumController extends AbstractController {
             case CONFILICT:
                 ThreadModel existingThread = new ThreadModel();
                 existingThread.setSlug(threadView.getSlug());
-                ResponseCodes responseCode1 = threadManager.findThread(existingThread);
-                if (responseCode == ResponseCodes.DB_ERROR)
+                ResponseCodes responseCode1 = threadManager.findThreadBySlug(existingThread);
+                if (responseCode1 == ResponseCodes.DB_ERROR)
                     return new ResponseEntity<>(new ErrorView("Error db"), null, HttpStatus.INTERNAL_SERVER_ERROR);
                 return new ResponseEntity<AbstractView>(existingThread.toView(), null, HttpStatus.CONFLICT);
             default:

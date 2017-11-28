@@ -20,6 +20,8 @@ public class QueryForThread {
         return "SELECT * FROM threads WHERE id = ?";
     }
 
+    static public String findBySlugOrId() {return "";}
+
     static public String createWithDate() {
         return "INSERT INTO threads (author_id, forum_id, title, created, message, votes, slug)" +
                 "VALUES(?, ?, ?, ?, ?, ?, ?)";

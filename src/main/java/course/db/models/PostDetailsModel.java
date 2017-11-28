@@ -18,7 +18,7 @@ public class PostDetailsModel {
     }
 
     public PostDetailsView toView() {
-        return new PostDetailsView(this.author.toView(), this.post.toView(), this.thread.toView(), this.forum.toForumView());
+        return new PostDetailsView(this.author.toView(), this.post.toView(), this.thread.toView(), this.forum.toView());
     }
 
     public void copy(PostDetailsModel other) {
