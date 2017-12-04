@@ -4,8 +4,14 @@ import course.db.views.ErrorView;
 
 public class ErrorModel {
     private String message;
+    public enum ResponseCode {
+        OK,
+        CONFILICT,
+        NO_RESULT,
+        DB_ERROR
+    }
+//    public ErrorModel() {}
 
-    public ErrorModel() {}
 
     public ErrorModel(String message) {this.message = message;}
 

@@ -1,10 +1,8 @@
 package course.db.managers;
 
-import com.sun.org.apache.regexp.internal.RE;
 import course.db.dao.PostDAO;
 import course.db.models.PostDetailsModel;
 import course.db.models.PostModel;
-import course.db.views.PostView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
@@ -20,88 +18,90 @@ public class PostManager {
     @Autowired
     public PostManager(@NotNull PostDAO postDAO) {this.postDAO = postDAO;}
 
-    public ResponseCodes findById(PostModel postModel) {
+    public StatusManagerRequest findById(PostModel postModel) {
         try {
             PostModel model = postDAO.findById(postModel.getId());
             postModel.copy(model);
-        }
-        catch (DuplicateKeyException ex) {
-            return ResponseCodes.CONFILICT;
-        }
-        catch (EmptyResultDataAccessException dAx) {
-            return ResponseCodes.NO_RESULT;
+        } catch (EmptyResultDataAccessException eRx) {
+            return new StatusManagerRequest(ManagerResponseCodes.NO_RESULT, eRx);
         }
         catch (DataAccessException dAx) {
-            return ResponseCodes.DB_ERROR;
+            return new StatusManagerRequest(ManagerResponseCodes.DB_ERROR, dAx);
         }
-        return ResponseCodes.OK;
+        return new StatusManagerRequest(ManagerResponseCodes.OK);
+        //        catch (DuplicateKeyException ex) {
+//            return new StatusManagerRequest(ManagerResponseCodes.CONFILICT, ex);
+//        }
     }
 
-    public ResponseCodes updatePost(PostModel postModel) {
+    public StatusManagerRequest updatePost(PostModel postModel) {
         try {
             PostModel model = postDAO.updatePost(postModel);
             postModel.copy(model);
         }
-        catch (DuplicateKeyException ex) {
-            return ResponseCodes.CONFILICT;
+        catch (DuplicateKeyException dKx) {
+            return new StatusManagerRequest(ManagerResponseCodes.CONFILICT, dKx);
         }
-        catch (EmptyResultDataAccessException dAx) {
-            return ResponseCodes.NO_RESULT;
+        catch (EmptyResultDataAccessException eRx) {
+            return new StatusManagerRequest(ManagerResponseCodes.NO_RESULT, eRx);
         }
         catch (DataAccessException dAx) {
-            return ResponseCodes.DB_ERROR;
+            return new StatusManagerRequest(ManagerResponseCodes.DB_ERROR, dAx);
         }
-        return ResponseCodes.OK;
+        return new StatusManagerRequest(ManagerResponseCodes.OK);
     }
 
-    public ResponseCodes findPostDetailsById(Integer id, String[] args, PostDetailsModel postDetailsModel) {
+    public StatusManagerRequest findPostDetailsById(Integer id, String[] args, PostDetailsModel postDetailsModel) {
         try {
             PostDetailsModel model = postDAO.getDetails(id, args);
-//            model.setId(postModel.getId());
             postDetailsModel.copy(model);
         }
-        catch (EmptyResultDataAccessException dAx) {
-            return ResponseCodes.NO_RESULT;
+        catch (EmptyResultDataAccessException eRx) {
+            return new StatusManagerRequest(ManagerResponseCodes.NO_RESULT, eRx);
         }
         catch (DataAccessException dAx) {
-            return ResponseCodes.DB_ERROR;
+            return new StatusManagerRequest(ManagerResponseCodes.DB_ERROR, dAx);
         }
-        return ResponseCodes.OK;
+        return new StatusManagerRequest(ManagerResponseCodes.OK);
     }
 
-    public ResponseCodes findPostDetailsById(PostModel postModel) {
+    public StatusManagerRequest statusClear() {
         try {
-            PostModel model = postDAO.findById(postModel.getId());
-//            model.setId(postModel.getId());
-            postModel.copy(model);
-        }
-        catch (EmptyResultDataAccessException dAx) {
-            return ResponseCodes.NO_RESULT;
-        }
-        catch (DataAccessException dAx) {
-            return ResponseCodes.DB_ERROR;
-        }
-        return ResponseCodes.OK;
-    }
-
-    public ResponseCodes statusClear() {
-        try {
-//            count = postDAO.count();
             postDAO.clear();
         }
         catch (DataAccessException dAx) {
-            return ResponseCodes.DB_ERROR;
+            return new StatusManagerRequest(ManagerResponseCodes.DB_ERROR, dAx);
         }
-        return ResponseCodes.OK;
+        return new StatusManagerRequest(ManagerResponseCodes.OK);
     }
 
     public Integer statusCount() {
-//        try {
-            return postDAO.count();
-//        }
-//        catch (DataAccessException dAx) {
-//            return ResponseCodes.DB_ERROR;
-//        }
-//        return ResponseCodes.OK;
+        return postDAO.count();
     }
 }
+
+
+//    public StatusManagerRequest findPostDetailsById(PostModel postModel) {
+//        try {
+//            PostModel model = postDAO.findById(postModel.getId());
+//            postModel.copy(model);
+//        }
+//        catch (EmptyResultDataAccessException eRx) {
+//            return new StatusManagerRequest(ManagerResponseCodes.NO_RESULT, eRx);
+//        }
+//        catch (DataAccessException dAx) {
+//            return new StatusManagerRequest(ManagerResponseCodes.DB_ERROR, dAx);
+//        }
+//        return new StatusManagerRequest(ManagerResponseCodes.OK);
+//    }
+
+
+//            model.setId(postModel.getId());
+
+//            model.setId(postModel.getId());
+
+//        }
+//        catch (DataAccessException dAx) {
+//            return ManagerResponseCodes.DB_ERROR;
+//        }
+//        return ManagerResponseCodes.OK;

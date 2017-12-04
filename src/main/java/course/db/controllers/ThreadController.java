@@ -1,6 +1,7 @@
 package course.db.controllers;
 
-import course.db.managers.ResponseCodes;
+import course.db.managers.ManagerResponseCodes;
+import course.db.managers.StatusManagerRequest;
 import course.db.models.ThreadModel;
 import course.db.views.*;
 import org.springframework.http.HttpStatus;
@@ -37,15 +38,15 @@ public class ThreadController extends AbstractController {
 
         final ThreadModel threadModel = new ThreadModel();
         checkAndSetSlugOrId(slug_or_id, threadModel);
-        ResponseCodes responseCode = threadManager.findThreadBySlugOrId(threadModel);
+        StatusManagerRequest status = threadManager.findThreadBySlugOrId(threadModel);
 
-        switch (responseCode) {
+        switch (status.getCode()) {
             case OK:
                 return new ResponseEntity<>(threadModel.toView(), null, HttpStatus.OK); //
             case NO_RESULT:
-                return new ResponseEntity<>(new ErrorView("No such thread"), null, HttpStatus.NOT_FOUND); //
+                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.NOT_FOUND); //
             default:
-                return new ResponseEntity<>(new ErrorView("errorDb"), null, HttpStatus.NOT_FOUND); //
+                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.NOT_FOUND); //
         }
     }
 
@@ -56,16 +57,16 @@ public class ThreadController extends AbstractController {
         final ThreadModel threadModel = new ThreadModel();
         checkAndSetSlugOrId(slug_or_id, threadModel);
 
-        ResponseCodes responseCode = threadManager.updateThread(threadModel);
-        switch (responseCode) {
+        StatusManagerRequest status = threadManager.updateThread(threadModel);
+        switch (status.getCode()) {
             case OK:
                 return new ResponseEntity<>(threadModel.toView(), null, HttpStatus.OK); //
             case NO_RESULT:
-                return new ResponseEntity<>(new ErrorView("No such thread"), null, HttpStatus.NOT_FOUND); //
+                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.NOT_FOUND); //
             case CONFILICT:
-                return new ResponseEntity<>(new ErrorView("Conflict"), null, HttpStatus.CONFLICT); //
+                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.CONFLICT); //
             default:
-                return new ResponseEntity<>(new ErrorView("errorDb"), null, HttpStatus.NOT_FOUND); //
+                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.NOT_FOUND); //
         }
 
     }

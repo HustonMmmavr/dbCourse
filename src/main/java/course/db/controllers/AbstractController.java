@@ -27,12 +27,4 @@ public class AbstractController {
     @Autowired
     @NotNull
     protected ThreadManager threadManager;
-//    public AbstractController(@NotNull UserDAO userDAO, @NotNull ForumDAO forumDAO, @NotNull ThreadDAO threadDAO,
-//                              @NotNull PostDAO postDAO) {
-//        this.forumDAO = forumDAO;
-//        this.threadDAO = threadDAO;
-//        this.userDAO = userDAO;
-//        this.postDAO = postDAO;
-//    }
-//
 }

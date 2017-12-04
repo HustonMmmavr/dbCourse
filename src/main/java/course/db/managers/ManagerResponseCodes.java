@@ -1,10 +1,8 @@
 package course.db.managers;
 
-public enum ResponseCodes {
+public enum ManagerResponseCodes {
     OK,
     CONFILICT,
     NO_RESULT,
     DB_ERROR
-
-
 }

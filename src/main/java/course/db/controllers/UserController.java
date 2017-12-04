@@ -1,7 +1,7 @@
 package course.db.controllers;
 
-import com.sun.org.apache.regexp.internal.RE;
-import course.db.managers.ResponseCodes;
+import course.db.managers.ManagerResponseCodes;
+import course.db.managers.StatusManagerRequest;
 import course.db.models.UserProfileModel;
 import course.db.views.AbstractView;
 import course.db.views.ErrorView;
@@ -22,38 +22,35 @@ public class UserController extends AbstractController {
     public ResponseEntity<Object> createUser(@RequestBody UserProfileView userProfileView,
                                                      @PathVariable(value="nickname") String nickname) {
         userProfileView.setNickname(nickname);
-        ResponseCodes responseCode = userProfileManager.createUser(new UserProfileModel(userProfileView));
+        StatusManagerRequest status = userProfileManager.createUser(new UserProfileModel(userProfileView));
 
-        switch (responseCode) {
+        switch (status.getCode()) {
             case OK:
                 return new ResponseEntity<>(userProfileView, null, HttpStatus.CREATED);
             case CONFILICT:
                 List<UserProfileView> users = new ArrayList<>();
-                ResponseCodes responseCode1 = userProfileManager.getUsersByNickOrEmail(userProfileView.getNickname(),
+                StatusManagerRequest status1 = userProfileManager.getUsersByNickOrEmail(userProfileView.getNickname(),
                         userProfileView.getEmail(), users);
-                if (responseCode1 == ResponseCodes.DB_ERROR)
-                    return new ResponseEntity<>(new ErrorView("ErrorDB"), null, HttpStatus.INTERNAL_SERVER_ERROR);
+                if (status1.getCode() == ManagerResponseCodes.DB_ERROR)
+                    return new ResponseEntity<>(new ErrorView(status1.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR);
                 return new ResponseEntity<>(users, null, HttpStatus.CONFLICT);
             default:
-                return new ResponseEntity<>(new ErrorView("ErrorDB"), null, HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-//        return new ResponseEntity<>(new ErrorView("f"), null, HttpStatus.OK);
-
     }
 
     @RequestMapping(path="/{nickname}/profile", method= RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AbstractView> getProfile(@PathVariable(value = "nickname") String nickname) {
-        UserProfileView userProfileView = new UserProfileView();
-        ResponseCodes responseCode = userProfileManager.getUserByNick(nickname, userProfileView);
+        UserProfileModel userProfileModel = new UserProfileModel();
+        StatusManagerRequest status = userProfileManager.getUserByNick(nickname, userProfileModel);
 
-        switch (responseCode) {
+        switch (status.getCode()) {
             case OK:
-                return new ResponseEntity<>(userProfileView, null, HttpStatus.OK);
+                return new ResponseEntity<>(userProfileModel.toView(), null, HttpStatus.OK);
             case NO_RESULT:
-                return new ResponseEntity<>(new ErrorView("No such user"), null, HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.NOT_FOUND);
             default:
-                return new ResponseEntity<>(new ErrorView("ErrorDB"), null, HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -62,17 +59,18 @@ public class UserController extends AbstractController {
     public ResponseEntity<AbstractView> setProfile(@RequestBody UserProfileView userProfileView,
                                                    @PathVariable(value = "nickname") String nickname) {
         userProfileView.setNickname(nickname);
-        ResponseCodes responseCode = userProfileManager.changeUser(userProfileView);
+        UserProfileModel userProfileModel = new UserProfileModel(userProfileView);
+        StatusManagerRequest status = userProfileManager.changeUser(userProfileModel);
 
-        switch (responseCode) {
+        switch (status.getCode()) {
             case OK:
-                return new ResponseEntity<>(userProfileView, null, HttpStatus.OK);
+                return new ResponseEntity<>(userProfileModel.toView(), null, HttpStatus.OK);
             case NO_RESULT:
-                return new ResponseEntity<>(new ErrorView("No such user"), null, HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.NOT_FOUND);
             case CONFILICT:
-                return new ResponseEntity<>(new ErrorView("New data conflicts with existing user"), null, HttpStatus.CONFLICT);
+                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.CONFLICT);
             default:
-                return new ResponseEntity<>(new ErrorView("ErrorDB"), null, HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

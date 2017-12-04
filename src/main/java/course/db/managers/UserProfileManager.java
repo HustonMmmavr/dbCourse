@@ -1,6 +1,5 @@
 package course.db.managers;
 
-import com.sun.org.apache.regexp.internal.RE;
 import course.db.dao.UserProfileDAO;
 import course.db.models.UserProfileModel;
 import course.db.views.UserProfileView;
@@ -20,79 +19,89 @@ public class UserProfileManager {
     @Autowired
     public UserProfileManager(@NotNull UserProfileDAO userProfileDAO) {this.userProfileDAO = userProfileDAO; }
 
-    public ResponseCodes createUser(@NotNull UserProfileModel userProfileModel) {
+    public StatusManagerRequest createUser(@NotNull UserProfileModel userProfileModel) {
         try {
             userProfileDAO.create(userProfileModel);
         }
-        catch (DuplicateKeyException dupEx) {
-            return ResponseCodes.CONFILICT;
+        catch (DuplicateKeyException dKx) {
+            return new StatusManagerRequest(ManagerResponseCodes.CONFILICT, dKx);
         }
-        return ResponseCodes.OK;
+        catch (DataAccessException dAx) {
+            return new StatusManagerRequest(ManagerResponseCodes.DB_ERROR, dAx);
+        }
+        return new StatusManagerRequest(ManagerResponseCodes.OK);
     }
 
-    public ResponseCodes getUserByNick(String nickname, UserProfileView user) {
+    public StatusManagerRequest getUserByNick(String nickname, UserProfileModel user) {
         try {
+            // TODO copy
             UserProfileModel userModel = userProfileDAO.getUserByNick(nickname);
-            user.setNickname(userModel.getNickname());
-            user.setAbout(userModel.getAbout());
-            user.setEmail(userModel.getEmail());
-            user.setFullname(userModel.getFullname());
+            user.copy(userModel);
         }
-        catch (EmptyResultDataAccessException ex) {
-            return ResponseCodes.NO_RESULT;
+        catch (EmptyResultDataAccessException eRx) {
+            return new StatusManagerRequest(ManagerResponseCodes.NO_RESULT, eRx);
         }
-        catch (DataAccessException daEx) {
-            return ResponseCodes.DB_ERROR;
+        catch (DataAccessException dAx) {
+            return new StatusManagerRequest(ManagerResponseCodes.DB_ERROR, dAx);
         }
-        return ResponseCodes.OK;
+        return new StatusManagerRequest(ManagerResponseCodes.OK);
     }
 
-    public ResponseCodes getUsersByNickOrEmail(String nickname, String email, List<UserProfileView> users) {
+    public StatusManagerRequest getUsersByNickOrEmail(String nickname, String email, List<UserProfileView> users) {
         try {
             List<UserProfileModel> userProfileModels = userProfileDAO.getUsersByNickOrEmail(nickname, email);
             for (UserProfileModel userProfileModel : userProfileModels) {
                 users.add(userProfileModel.toView());
             }
         }
-        catch (DataAccessException daEx) {
-            return ResponseCodes.DB_ERROR;
+        catch (EmptyResultDataAccessException eRx) {
+            return new StatusManagerRequest(ManagerResponseCodes.NO_RESULT, eRx);
         }
-        return ResponseCodes.OK;
+        catch (DataAccessException dAx) {
+            return new StatusManagerRequest(ManagerResponseCodes.DB_ERROR, dAx);
+        }
+        return new StatusManagerRequest(ManagerResponseCodes.OK);
     }
 
-    public ResponseCodes changeUser(UserProfileView userProfileView) {
+    public StatusManagerRequest changeUser(UserProfileModel userProfileModel) {
         try {
-            int res = userProfileDAO.change(new UserProfileModel(userProfileView));
+            int res = userProfileDAO.change(userProfileModel);
             if (res == 0)
-                return ResponseCodes.NO_RESULT;
+                return new StatusManagerRequest(ManagerResponseCodes.NO_RESULT, "no user found");
         }
-        catch (DuplicateKeyException duEx){
-            return ResponseCodes.CONFILICT;
+        catch (DuplicateKeyException dKx){
+            return new StatusManagerRequest(ManagerResponseCodes.CONFILICT, dKx);
         }
-        catch (DataAccessException daEx) {
-            return ResponseCodes.DB_ERROR;
+        catch (DataAccessException dAx) {
+            return new StatusManagerRequest(ManagerResponseCodes.DB_ERROR, dAx);
         }
-        return ResponseCodes.OK;
+        return new StatusManagerRequest(ManagerResponseCodes.OK);
     }
 
-    public ResponseCodes statusClear() {
+    public StatusManagerRequest statusClear() {
         try {
             userProfileDAO.clear();
         }
         catch (DataAccessException dAx) {
-            return ResponseCodes.DB_ERROR;
+            return new StatusManagerRequest(ManagerResponseCodes.DB_ERROR, dAx);
         }
-        return ResponseCodes.OK;
+        return new StatusManagerRequest(ManagerResponseCodes.OK);
     }
 
     public Integer statusCount() {
-//        try {
-            return userProfileDAO.count();
-//        }
-//        catch (DataAccessException dAx) {
-//            return ResponseCodes.DB_ERROR;
-//        }
-//        return ResponseCodes.OK;
+        return userProfileDAO.count();
     }
 
 }
+
+//    user.setNickname(userModel.getNickname());
+//    user.setAbout(userModel.getAbout());
+//    user.setEmail(userModel.getEmail());
+//    user.setFullname(userModel.getFullname());
+
+//        try {
+//        }
+//        catch (DataAccessException dAx) {
+//            return ManagerResponseCodes.DB_ERROR;
+//        }
+//        return ManagerResponseCodes.OK;

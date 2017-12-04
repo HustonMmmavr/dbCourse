@@ -21,11 +21,20 @@ public class UserProfileModel {
         this.email = email;
     }
 
+    public UserProfileModel() {}
+
     public UserProfileModel(UserProfileView userProfileView) {
         this.nickname = userProfileView.getNickname();
         this.fullname = userProfileView.getFullname();
         this.about = userProfileView.getAbout();
         this.email = userProfileView.getEmail();
+    }
+
+    public void copy(UserProfileModel other) {
+        this.nickname = other.getNickname();
+        this.fullname = other.getFullname();
+        this.about = other.getAbout();
+        this.email = other.getEmail();
     }
 
     public UserProfileView toView(){

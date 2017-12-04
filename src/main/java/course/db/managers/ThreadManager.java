@@ -1,11 +1,7 @@
 package course.db.managers;
 
-import com.sun.istack.internal.Nullable;
-import com.sun.org.apache.regexp.internal.RE;
-import course.db.dao.PostDAO;
 import course.db.dao.ThreadDAO;
 import course.db.models.ThreadModel;
-import course.db.views.ThreadView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
@@ -21,75 +17,85 @@ public class ThreadManager {
     @Autowired
     public ThreadManager(@NotNull ThreadDAO threadDAO) {this.threadDAO = threadDAO;}
 
-//    public ResponseCodes create (ThreadModel threadModel) {
-//        try {
-//           ThreadModel createdThread =  threadDAO.create(threadModel);
-////           threadModel;
-//            //TODO fill data from
-//        }
-//        catch (EmptyResultDataAccessException ex) {
-//            return ResponseCodes.NO_RESULT;
-//        }
-//        catch (DuplicateKeyException dex) {
-//            return ResponseCodes.CONFILICT;
-//        }
-//        catch (DataAccessException d) {
-//            return ResponseCodes.DB_ERROR;
-//        }
-//        return ResponseCodes.OK;
-//    }
-
-
-    public ResponseCodes findThreadBySlugOrId(ThreadModel threadModel) {
+    public StatusManagerRequest findThreadBySlugOrId(ThreadModel threadModel) {
         try {
             ThreadModel model = threadDAO.findBySlugOrId(threadModel);
             threadModel.copy(model);
         }
-        catch (EmptyResultDataAccessException e) {
-            return ResponseCodes.NO_RESULT;
+        catch (EmptyResultDataAccessException eRx) {
+            return new StatusManagerRequest(ManagerResponseCodes.NO_RESULT, eRx);
         }
-        catch (DataAccessException d) {
-            return ResponseCodes.DB_ERROR;
+        catch (DataAccessException dAx) {
+            return new StatusManagerRequest(ManagerResponseCodes.DB_ERROR, dAx);
         }
-        return ResponseCodes.OK;
+        return new StatusManagerRequest(ManagerResponseCodes.OK);
     }
 
-    public ResponseCodes updateThread(ThreadModel threadModel) {
+    public StatusManagerRequest updateThread(ThreadModel threadModel) {
         try {
             threadDAO.updateThread(threadModel);
             ThreadModel newThreadModel = threadDAO.findBySlugOrId(threadModel);
             threadModel.copy(newThreadModel);
         }
-        catch (DuplicateKeyException d) {
-            return ResponseCodes.CONFILICT;
+        catch (DuplicateKeyException dAx) {
+            return new StatusManagerRequest(ManagerResponseCodes.CONFILICT, dAx);
         }
-        catch (EmptyResultDataAccessException em) {
-            return ResponseCodes.NO_RESULT;
+        catch (EmptyResultDataAccessException eRx) {
+            return new StatusManagerRequest(ManagerResponseCodes.NO_RESULT, eRx);
         }
-        catch (DataAccessException d) {
-            return ResponseCodes.DB_ERROR;
+        catch (DataAccessException dAx) {
+            return new StatusManagerRequest(ManagerResponseCodes.DB_ERROR, dAx);
         }
-        return ResponseCodes.OK;
+        return new StatusManagerRequest(ManagerResponseCodes.OK);
     }
 
-    public ResponseCodes findThreadBySlug(ThreadModel threadModel) {
+    public StatusManagerRequest findThreadBySlug(ThreadModel threadModel) {
         try {
             ThreadModel existingThread = threadDAO.findThread(threadModel);
             threadModel.copy(existingThread);
         }
-        catch (EmptyResultDataAccessException em) {
-            return ResponseCodes.NO_RESULT;
+        catch (EmptyResultDataAccessException eRx) {
+            return new StatusManagerRequest(ManagerResponseCodes.NO_RESULT, eRx);
         }
-        catch (DataAccessException d) {
-            return ResponseCodes.DB_ERROR;
+        catch (DataAccessException dAx) {
+            return new StatusManagerRequest(ManagerResponseCodes.DB_ERROR, dAx);
         }
-        return ResponseCodes.OK;
+        return new StatusManagerRequest(ManagerResponseCodes.OK);
     }
 
-    public ResponseCodes createThread (ThreadModel threadModel) {
+    public StatusManagerRequest createThread (ThreadModel threadModel) {
         try {
             ThreadModel createdThread =  threadDAO.createThread(threadModel);
             threadModel.copy(createdThread);
+            //TODO fill data from
+        }
+        catch (EmptyResultDataAccessException eRx) {
+            return new StatusManagerRequest(ManagerResponseCodes.NO_RESULT, eRx);
+        }
+        catch (DuplicateKeyException dAx) {
+            return new StatusManagerRequest(ManagerResponseCodes.CONFILICT, dAx);
+        }
+        catch (DataAccessException dAx) {
+            return new StatusManagerRequest(ManagerResponseCodes.DB_ERROR, dAx);
+        }
+        return new StatusManagerRequest(ManagerResponseCodes.OK);
+    }
+
+    public StatusManagerRequest statusClear() {
+        try {
+            threadDAO.clear();
+        }
+        catch (DataAccessException dAx) {
+            return new StatusManagerRequest(ManagerResponseCodes.DB_ERROR, dAx);
+        }
+        return new StatusManagerRequest(ManagerResponseCodes.OK);
+    }
+
+    public Integer statusCount() {
+        return threadDAO.count();
+    }
+}
+
 //            threadModel.setAuthor(createdThread.getAuthor());
 //            threadModel.setCreated(createdThread.getCreated());
 //            threadModel.setId(createdThread.getId());
@@ -99,38 +105,32 @@ public class ThreadManager {
 //            threadModel.setTitle(createdThread.getTitle());
 //            threadModel.setVotes(createdThread.getVotes());
 //           threadModel;
-            //TODO fill data from
-        }
-        catch (EmptyResultDataAccessException ex) {
-            return ResponseCodes.NO_RESULT;
-        }
-        catch (DuplicateKeyException dex) {
-            return ResponseCodes.CONFILICT;
-        }
-        catch (DataAccessException d) {
-            System.out.print(d.getMessage());
-            return ResponseCodes.DB_ERROR;
-        }
-        return ResponseCodes.OK;
-    }
 
-    public ResponseCodes statusClear() {
-        try {
-            threadDAO.clear();
-        }
-        catch (DataAccessException dAx) {
-            return ResponseCodes.DB_ERROR;
-        }
-        return ResponseCodes.OK;
-    }
-
-    public Integer statusCount() {
+//    public ManagerResponseCodes create (ThreadModel threadModel) {
 //        try {
-            return threadDAO.count();
+//           ThreadModel createdThread =  threadDAO.create(threadModel);
+////           threadModel;
+//            //TODO fill data from
+//        }
+//        catch (EmptyResultDataAccessException ex) {
+//            return ManagerResponseCodes.NO_RESULT;
+//        }
+//        catch (DuplicateKeyException dex) {
+//            return ManagerResponseCodes.CONFILICT;
+//        }
+//        catch (DataAccessException d) {
+//            return ManagerResponseCodes.DB_ERROR;
+//        }
+//        return ManagerResponseCodes.OK;
+//    }
+
+
+
+
+//        try {
+
 //        }
 //        catch (DataAccessException dAx) {
-//            return ResponseCodes.DB_ERROR;
+//            return ManagerResponseCodes.DB_ERROR;
 //        }
-//        return ResponseCodes.OK;
-    }
-}
+//        return ManagerResponseCodes.OK;
