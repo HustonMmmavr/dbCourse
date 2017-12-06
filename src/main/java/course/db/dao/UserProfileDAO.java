@@ -35,7 +35,7 @@ public class UserProfileDAO extends AbstractDAO {
                 new Object[] {nickname, null}, _getUserModel);
     }
 
-    public Integer change(UserProfileModel userProfileModel) {
+    public void change(UserProfileModel userProfileModel) {
         final StringBuilder sql = new StringBuilder("UPDATE userprofiles SET");
         final List<Object> args = new ArrayList<>();
         String about = userProfileModel.getAbout();
@@ -47,7 +47,7 @@ public class UserProfileDAO extends AbstractDAO {
             args.add(about);
         }
         if (email != null) {
-            sql.append(" email = ?,");
+            sql.append(" email = ?::CITEXT,");
             args.add(email);
         }
         if (fullname != null) {
@@ -56,16 +56,15 @@ public class UserProfileDAO extends AbstractDAO {
         }
         if (!args.isEmpty()) {
             sql.delete(sql.length() - 1, sql.length());
-            sql.append(" WHERE nickname = ?");
+            sql.append(" WHERE nickname = ?::CITEXT");
             args.add(userProfileModel.getNickname());
-            return jdbcTemplate.update(sql.toString(), args.toArray());
+            jdbcTemplate.update(sql.toString(), args.toArray());
         }
-        return 0;
     }
 
     public List<UserProfileModel> getUsersByNickOrEmail(String nickname, String email) {
-        return jdbcTemplate.query(QueryForUserProfile.getUserByNickOrEmail(),
-                new Object[] {nickname, email}, _getUserModel);
+        return jdbcTemplate.query(QueryForUserProfile.getUserByNickOrEmail(), new Object[] {nickname, email},
+                _getUserModel);
     }
 
     @Override

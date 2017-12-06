@@ -24,7 +24,7 @@ public class QueryForThread {
 
     static public String createWithDate() {
         return "INSERT INTO threads (author_id, forum_id, title, created, message, votes, slug)" +
-                "VALUES(?, ?, ?, ?, ?, ?, ?)";
+                "VALUES(?, ?, ?, ?::TIMESTAMPTZ, ?, ?, ?)";
     }
 
 

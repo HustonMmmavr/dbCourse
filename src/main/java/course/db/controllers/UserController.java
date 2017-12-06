@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(path="/user")
+@RequestMapping(path="/api/user")
 public class UserController extends AbstractController {
     @RequestMapping(path="/{nickname}/create", method= RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)

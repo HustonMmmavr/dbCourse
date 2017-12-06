@@ -25,7 +25,7 @@ public class PostDAO extends AbstractDAO {
 
     public PostModel findById(Integer id) {
         PostModel postModel = jdbcTemplate.queryForObject(QueryForPost.getById(), new Object[] {id}, _getPostModel);
-        return new PostModel();
+        return postModel;
     }
 
 //    public PostModel updatePost(PostModel newModel) {

@@ -3,13 +3,13 @@ package course.db.db_queries;
 public class QueryForForums {
 
     static public String create() {
-        return "INSERT INTO forums(owner_id, title, slug) VALUES (?, ?, ?)";
+        return "INSERT INTO forums(owner_id, title, slug) VALUES (?, ?, ?::CITEXT)";
     }
 
     public static String findForumBySlug() {
         return "SELECT forum.title, forum.posts, forum.threads, forum.slug, _user.nickname " +
                 "FROM forums forum JOIN userprofiles _user ON (forum.owner_id=_user.id) " +
-                "WHERE forum.slug = ?";
+                "WHERE forum.slug = ?::CITEXT";
     }
 
 //    public static String findForumIdBySlug() {
@@ -32,7 +32,7 @@ public class QueryForForums {
                 "thread.created, thread.title, thread.message, thread.votes " +
                 "FROM threads thread JOIN userprofiles _user ON (thread.author_id = _user.id)" +
                 "JOIN forums forum ON (thread.forum_id = forum.id)" +
-                "WHERE forum.slug = ? ";
+                "WHERE forum.slug = ?::CITEXT ";
     }
 
     public static String findThreadsById() {

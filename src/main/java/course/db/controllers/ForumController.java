@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(path="/forum")
+@RequestMapping(path="/api/forum")
 public class ForumController extends AbstractController {
     @RequestMapping(path="/create", method= RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
     produces = MediaType.APPLICATION_JSON_VALUE)
@@ -47,7 +47,7 @@ public class ForumController extends AbstractController {
         StatusManagerRequest status = forumManager.findForum(forumModel);
         switch(status.getCode()) {
             case OK:
-                return new ResponseEntity<>(forumModel.toView(), null, HttpStatus.CREATED); //
+                return new ResponseEntity<>(forumModel.toView(), null, HttpStatus.OK); //
             case NO_RESULT:
                 return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.NOT_FOUND);
             default:

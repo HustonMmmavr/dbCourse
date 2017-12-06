@@ -65,9 +65,14 @@ public class UserProfileManager {
 
     public StatusManagerRequest changeUser(UserProfileModel userProfileModel) {
         try {
-            int res = userProfileDAO.change(userProfileModel);
-            if (res == 0)
-                return new StatusManagerRequest(ManagerResponseCodes.NO_RESULT, "no user found");
+            userProfileDAO.change(userProfileModel);
+            UserProfileModel model = userProfileDAO.getUserByNick(userProfileModel.getNickname());
+            userProfileModel.copy(model);
+//            if (res == 0)
+//                return new StatusManagerRequest(ManagerResponseCodes.NO_RESULT, "no user found");
+        }
+        catch (EmptyResultDataAccessException dKx) {
+            return new StatusManagerRequest(ManagerResponseCodes.NO_RESULT, dKx);
         }
         catch (DuplicateKeyException dKx){
             return new StatusManagerRequest(ManagerResponseCodes.CONFILICT, dKx);

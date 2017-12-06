@@ -21,12 +21,12 @@ public class AbstractDAO {
 
     //(Integer votes, Integer id, String title, String author, String message, String created, String forum, Str
     protected RowMapper<ThreadModel> _getThreadModel = (rs, rowNum) -> {
-            final Timestamp timestamp = rs.getTimestamp("created");
-            final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        final Timestamp timestamp = rs.getTimestamp("created");
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         return new ThreadModel(
             rs.getInt("votes"), rs.getInt("id"), rs.getString("title"), rs.getString("nickname"),
-            rs.getString("message"), dateFormat.format(timestamp.getTime()), null ,rs.getString("slug")
+            rs.getString("message"), dateFormat.format(timestamp.getTime()), null ,rs.getString("thread_slug")
         );
     };
 

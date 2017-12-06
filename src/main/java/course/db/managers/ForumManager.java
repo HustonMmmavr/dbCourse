@@ -41,10 +41,7 @@ public class ForumManager {
     public StatusManagerRequest findForum(ForumModel forumModel) {//, List<ForumView> forumViewList) {
         try {
             ForumModel forum = forumDAO.getForumBySlug(forumModel.getSlug());
-            forumModel.setPosts(forum.getPosts());
-            forumModel.setThreads(forum.getThreads());
-            forumModel.setTitle(forum.getTitle());
-            forumModel.setUser(forum.getUser());
+            forumModel.copy(forum);
         }
         catch (EmptyResultDataAccessException eRx) {
             return new StatusManagerRequest(ManagerResponseCodes.NO_RESULT, eRx);

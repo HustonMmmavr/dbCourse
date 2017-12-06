@@ -32,6 +32,14 @@ public class ForumModel {
         return forumView;
     }
 
+    public void copy(ForumModel other) {
+        this.posts = other.getPosts();
+        this.slug = other.getSlug();
+        this.threads = other.getThreads();
+        this.user = other.getUser();
+        this.title = other.getTitle();
+    }
+
     public String getTitle() {
         return title;
     }
