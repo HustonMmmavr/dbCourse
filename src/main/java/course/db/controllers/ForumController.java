@@ -25,7 +25,7 @@ public class ForumController extends AbstractController {
                 // TODO read from db //maybe
                 forumView.setPosts(0);
                 forumView.setThreads(0);
-                return new ResponseEntity<>(forumView, null, HttpStatus.CREATED); //
+                return new ResponseEntity<>(, null, HttpStatus.CREATED); //
             case NO_RESULT:
                 return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.NOT_FOUND);
             case CONFILICT:
