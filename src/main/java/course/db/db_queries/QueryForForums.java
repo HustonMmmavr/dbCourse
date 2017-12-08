@@ -3,7 +3,7 @@ package course.db.db_queries;
 public class QueryForForums {
 
     static public String create() {
-        return "INSERT INTO forums(owner_id, title, slug) VALUES (?, ?, ?::CITEXT)";
+        return "INSERT INTO forums(owner_id, title, slug) VALUES (?, ?, ?::CITEXT) RETURN *";
     }
 
     public static String findForumBySlug() {

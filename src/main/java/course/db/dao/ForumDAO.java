@@ -23,10 +23,15 @@ public class ForumDAO extends AbstractDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void create(@NotNull ForumModel forumModel) {
+    public ForumModel create(@NotNull ForumModel forumModel) {
         int userId = jdbcTemplate.queryForObject(QueryForUserProfile.getIdByNick(), new Object[]
                 {forumModel.getUser()}, Integer.class);
-        jdbcTemplate.update(QueryForForums.create(), userId, forumModel.getTitle(), forumModel.getSlug());
+//        UserProfileModel userProfileModel = jdbcTemplate.queryForObject(
+//                QueryForUserProfile.getUserByNickOrEmail(), new Object[]{forumModel.get});
+     //   jdbcTemplate.update(QueryForForums.create(), userId, forumModel.getTitle(), forumModel.getSlug());
+        ForumModel model = jdbcTemplate.queryForObject(QueryForForums.create(), new Object[] {userId, forumModel.getTitle(), forumModel.getSlug()},
+                _getForumModel);
+        return model;
     }
 
     public ForumModel getForumBySlug(String slug) {
