@@ -3,8 +3,13 @@ package course.db.db_queries;
 public class QueryForForums {
 
     static public String create() {
-        return "INSERT INTO forums(owner_id, title, slug) VALUES (?, ?, ?::CITEXT) RETURN *";
+        return "INSERT INTO forums(owner_id, title, slug) VALUES (?, ?, ?::CITEXT)";
     }
+
+    // TODO save user in database
+//    static public String create() {
+//        return "INSERT INTO forums(owner_id, title, slug) VALUES (?, ?, ?::CITEXT) RETURNING *";
+//    }
 
     public static String findForumBySlug() {
         return "SELECT forum.title, forum.posts, forum.threads, forum.slug, _user.nickname " +
@@ -23,7 +28,7 @@ public class QueryForForums {
 //    }
 
     public static String findForumIdBySlug() {
-        return "SELECT id FROM forums WHERE slug = ?";
+        return "SELECT id FROM forums WHERE slug = ?::CITEXT";
     }
 
     //TODO maybe subqu, denormalize

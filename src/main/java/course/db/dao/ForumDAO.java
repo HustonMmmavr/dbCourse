@@ -26,12 +26,9 @@ public class ForumDAO extends AbstractDAO {
     public ForumModel create(@NotNull ForumModel forumModel) {
         int userId = jdbcTemplate.queryForObject(QueryForUserProfile.getIdByNick(), new Object[]
                 {forumModel.getUser()}, Integer.class);
-//        UserProfileModel userProfileModel = jdbcTemplate.queryForObject(
-//                QueryForUserProfile.getUserByNickOrEmail(), new Object[]{forumModel.get});
-     //   jdbcTemplate.update(QueryForForums.create(), userId, forumModel.getTitle(), forumModel.getSlug());
-        ForumModel model = jdbcTemplate.queryForObject(QueryForForums.create(), new Object[] {userId, forumModel.getTitle(), forumModel.getSlug()},
-                _getForumModel);
-        return model;
+        jdbcTemplate.update(QueryForForums.create(), userId, forumModel.getTitle(), forumModel.getSlug());
+//        return jdbcTemplate.queryForObject(QueryForForums.create(), new Object[] {userId, forumModel.getTitle(), forumModel.getSlug()}, _getForumModel);
+        return null;
     }
 
     public ForumModel getForumBySlug(String slug) {

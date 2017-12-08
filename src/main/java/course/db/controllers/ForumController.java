@@ -19,13 +19,11 @@ public class ForumController extends AbstractController {
     @RequestMapping(path="/create", method= RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
     produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AbstractView> createForum(@RequestBody ForumView forumView) {
-        ForumModel forumModel = new ForumModel();
+        ForumModel forumModel = new ForumModel(forumView);
         StatusManagerRequest status = forumManager.create(forumModel);
         switch(status.getCode()) {
             case OK:
                 // TODO read from db //maybe
-                forumView.setPosts(0);
-                forumView.setThreads(0);
                 return new ResponseEntity<>(forumModel.toView(), null, HttpStatus.CREATED); //
             case NO_RESULT:
                 return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.NOT_FOUND);

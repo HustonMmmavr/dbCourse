@@ -24,7 +24,9 @@ public class ForumManager {
 
     public StatusManagerRequest create(ForumModel forumModel) {
         try {
-            ForumModel model = forumDAO.create(forumModel);
+//            ForumModel model = forumDAO.create(forumModel);
+            forumDAO.create(forumModel);
+            ForumModel model = forumDAO.getForumBySlug(forumModel.getSlug());
             forumModel.copy(model);
         }
         catch (EmptyResultDataAccessException eRx) {
