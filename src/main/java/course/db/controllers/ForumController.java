@@ -57,7 +57,7 @@ public class ForumController extends AbstractController {
     @RequestMapping(path="/{slug}/create", method= RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AbstractView> createBranch(@PathVariable(value="slug") String slug, @RequestBody ThreadView threadView) {
-        threadView.setSlug(slug);
+        threadView.setForum(slug);
         ThreadModel threadModel = new ThreadModel(threadView);
         StatusManagerRequest status = threadManager.createThread(threadModel);
         switch(status.getCode()) {
@@ -99,13 +99,13 @@ public class ForumController extends AbstractController {
         StatusManagerRequest status1 = forumManager.findThreads(forumModel, limit, since, desc, threadViewList);
         switch (status1.getCode()) {
             case NO_RESULT:
-                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(new ErrorView(status1.getMessage()), null, HttpStatus.NOT_FOUND);
             case DB_ERROR:
-                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(new ErrorView(status1.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR);
             default:
                 break;
         }
-        return new ResponseEntity<>(threadViewList, null, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(threadViewList, null, HttpStatus.OK);
 
     }
 

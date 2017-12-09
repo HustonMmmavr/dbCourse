@@ -1,6 +1,7 @@
 package course.db.dao;
 
 import course.db.db_queries.QueryForForums;
+import course.db.db_queries.QueryForThread;
 import course.db.db_queries.QueryForUserProfile;
 import course.db.models.ForumModel;
 import course.db.models.ThreadModel;
@@ -67,13 +68,8 @@ public class ForumDAO extends AbstractDAO {
 
         //since=" 2017-11-27 22:54:55.047629+03";
         if (since != null) {
-            builder.append(" AND thread.created " + (desc == Boolean.TRUE  ? " <= ? " : " >= ? "));
-//                    "< to_timestamp(?," +
-//                    " 'yyyy-MM-dd\'T\'HH:mm:ss.SSS\'Z\'') " : "> to_timestamp(?, 'yyyy-MM-dd\'T\'HH:mm:ss.SSS\'Z\'') "));
-            //final Timestamp timestamp = new Timestamp(since);
-            final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-            dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-           // list.add(dateFormat.get);
+            builder.append(" AND thread.created " + (desc == Boolean.TRUE  ? " <= ?::TIMESTAMPTZ " : " >= ?::TIMESTAMPTZ "));
+            list.add(since);
         }
 
         builder.append("ORDER by thread.created " + (desc == Boolean.TRUE  ? "DESC " : " "));
@@ -83,7 +79,7 @@ public class ForumDAO extends AbstractDAO {
             list.add(limit);
         }
 
-        List<ThreadModel> models = jdbcTemplate.query(builder.toString(), list.toArray(new Object[list.size()]),
+        List<ThreadModel> models = jdbcTemplate.query(builder.toString(), list.toArray(),
                 _getThreadModel);
 
         for (ThreadModel model : models) {

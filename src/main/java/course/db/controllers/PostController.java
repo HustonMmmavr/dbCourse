@@ -35,12 +35,13 @@ public class PostController extends AbstractController {
     public ResponseEntity<AbstractView> setDetails(@PathVariable(value="id") String id, @RequestBody PostView postView) {
         PostModel postModel = new PostModel(postView);
         postModel.setId(new Integer(id));
+        Integer id_ = new Integer(id);
 
         StatusManagerRequest status;
         if (postModel.getMessage() != null)
             status = postManager.updatePost(postModel);//(forumModel);
         else
-            status = postManager.findById(postModel);
+            status = postManager.findById(id_, postModel);
         switch(status.getCode()) {
             case OK:
                 return new ResponseEntity<>(postModel.toView(), null, HttpStatus.CREATED); //

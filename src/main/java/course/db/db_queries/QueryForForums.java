@@ -37,15 +37,15 @@ public class QueryForForums {
                 "thread.created, thread.title, thread.message, thread.votes " +
                 "FROM threads thread JOIN userprofiles _user ON (thread.author_id = _user.id)" +
                 "JOIN forums forum ON (thread.forum_id = forum.id)" +
-                "WHERE forum.slug = ?::CITEXT ";
+                "WHERE thread.slug = ?::CITEXT ";
     }
 
     public static String findThreadsById() {
 
 
-        return "SELECT thread.id, thread.slug, thread.created, thread.title, thread.message, thread.votes, " +
+        return "SELECT thread.id, thread.slug as thread_slug, forum.slug as forum_slug, thread.created, thread.title, thread.message, thread.votes, " +
                 " _user.nickname FROM userprofiles _user JOIN (SELECT * FROM threads WHERE forum_id=?) " +
-                "thread  ON(thread.author_id=_user.id)";
+                "thread  ON(thread.author_id=_user.id) JOIN forums forum ON (forum.id = thread.forum_id)";
 //        return "SELECT _user.nicname thread.id, thread.slug, thread.created, thread.title, thread.message," +
 //                " thread.votes FROM (SELECT * FOROM threads WHERE forum_id=?) thread JOIN userprofiles _uesr ON" +
 //                "(thread.author_id=_user.id)";

@@ -44,7 +44,7 @@ public class PostDAO extends AbstractDAO {
                     userProfileModel = jdbcTemplate.queryForObject(QueryForUserProfile.getUserByNickOrEmail(),
                             new Object[] {postModel.getAuthor(), null}, _getUserModel);
                 } else if (arg.equals("thread")) {
-                    threadModel = jdbcTemplate.queryForObject(QueryForThread.findById(), new
+                    threadModel = jdbcTemplate.queryForObject(QueryForThread.findThreadById(), new
                             Object[] {postModel.getThread()}, _getThreadModel);
                 } else if (arg.equals("forum")) {
                     forumModel = jdbcTemplate.queryForObject(QueryForForums.findForumBySlug(),

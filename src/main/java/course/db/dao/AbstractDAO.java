@@ -26,7 +26,7 @@ public class AbstractDAO {
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         return new ThreadModel(
             rs.getInt("votes"), rs.getInt("id"), rs.getString("title"), rs.getString("nickname"),
-            rs.getString("message"), dateFormat.format(timestamp.getTime()), null ,rs.getString("thread_slug")
+            rs.getString("message"), dateFormat.format(timestamp.getTime()), rs.getString("forum_slug") ,rs.getString("thread_slug")
         );
     };
 
