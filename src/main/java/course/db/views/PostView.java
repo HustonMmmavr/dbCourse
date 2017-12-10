@@ -1,5 +1,6 @@
 package course.db.views;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -18,9 +19,19 @@ public class PostView implements AbstractView {
 
     }
 
-    public PostView(Integer id, Integer parent, String author, String message, Boolean isEdited, String forum, Integer thread, String created) {
+    public PostView(@JsonProperty("id") Integer id,
+                    @JsonProperty("parent") Integer parent,
+                    @JsonProperty("author") String author,
+                    @JsonProperty("message") String message,
+                    @JsonProperty("isEdited") Boolean isEdited,
+                    @JsonProperty("forum") String forum,
+                    @JsonProperty("thread") Integer thread,
+                    @JsonProperty("created") String created) {
         this.id = id;
-        this.parent = parent;
+        if (parent != null)
+            this.parent = parent;
+        else
+            this.parent = 0;
         this.author = author;
         this.message = message;
         this.isEdited = isEdited;

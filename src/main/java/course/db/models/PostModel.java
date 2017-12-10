@@ -112,6 +112,6 @@ public class PostModel {
     }
 
     public PostView toView() {
-        return new PostView();
+        return new PostView(id, parent, author, message, isEdited, forum, thread, created);
     }
 }

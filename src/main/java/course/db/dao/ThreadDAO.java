@@ -4,9 +4,11 @@ import course.db.db_queries.QueryForForums;
 import course.db.db_queries.QueryForThread;
 import course.db.db_queries.QueryForUserProfile;
 import course.db.models.ThreadModel;
+import course.db.models.VoteModel;
 import course.db.views.ThreadView;
 import jdk.nashorn.internal.scripts.JD;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -43,8 +45,6 @@ public class ThreadDAO extends AbstractDAO {
         {
             id = jdbcTemplate.queryForObject(QueryForThread.createWithDate(), new Object[] {
                     userId, forumId, threadModel.getTitle(), threadModel.getCreated(), threadModel.getMessage(), 0, threadModel.getSlug()}, Integer.class);
-//            jdbcTemplate.update(QueryForThread.createWithDate(), new Object[]{
-//                    userId, forumId, threadModel.getTitle(), threadModel.getCreated(), threadModel.getMessage(), 0, threadModel.getSlug()});
         }
         int res = jdbcTemplate.update(QueryForForums.incThreadCount(), new Object[] {forumId});
 
@@ -78,6 +78,26 @@ public class ThreadDAO extends AbstractDAO {
         }
     }
 
+
+    public ThreadModel setVote(VoteModel voteModel, ThreadModel threadModel) {
+        Integer userId = jdbcTemplate.queryForObject(QueryForUserProfile.getIdByNick(), Integer.class, voteModel.getNickname());
+        Integer threadId;
+        if (threadModel.getId() != null)
+            threadId = threadModel.getId();
+        else
+            threadId = jdbcTemplate.queryForObject(QueryForThread.findThreadIdBySlug(), new Object[] {threadModel.getSlug()}, Integer.class);
+        try {
+            jdbcTemplate.update(QueryForThread.insertVote(), new Object[] {userId, threadId, voteModel.getVote()});
+        }
+        catch (DuplicateKeyException ex) {
+            jdbcTemplate.update(QueryForThread.updateVote(), new Object[] {voteModel.getVote(), userId, threadId});
+        }
+        Integer vote_sum = jdbcTemplate.queryForObject(QueryForThread.getVoteSum(), new Object[] {threadId}, Integer.class);
+
+        jdbcTemplate.update(QueryForThread.updateVotes(), new Object[] {vote_sum, threadId});
+        return jdbcTemplate.queryForObject(QueryForThread.findThreadById(), new Object[] {threadId}, _getThreadModel);
+    }
+
     public ThreadModel findBySlugOrId(ThreadModel threadModel) {
         if (threadModel.getId() != null)
             return jdbcTemplate.queryForObject(QueryForThread.findThreadById(), new Object[]
@@ -101,22 +121,3 @@ public class ThreadDAO extends AbstractDAO {
         jdbcTemplate.execute(QueryForThread.clear());
     }
 }
-
-
-//    public ThreadModel createByForum(ThreadModel threadModel) {
-//        Integer userId = jdbcTemplate.queryForObject(QueryForUserProfile.getIdByNick(), new Object[] {threadModel.getAuthor()},
-//                                                            Integer.class);
-//        Integer forumId = jdbcTemplate.queryForObject(QueryForForums.findForumBySlug(), new Object[] {threadModel.getSlug()},
-//                Integer.class);
-//        String created = threadModel.getCreated();
-//        if (created == null) {
-//            jdbcTemplate.update(QueryForThread.createNoDate(), new Object[] {
-//                    userId, forumId, threadModel.getTitle(), threadModel.getMessage(), 0, threadModel.getSlug()});
-//        }
-//        else
-//        {
-//            jdbcTemplate.update(QueryForThread.createWithDate(), new Object[]{
-//                    userId, forumId, threadModel.getTitle(), threadModel.getCreated(), threadModel.getMessage(), 0, threadModel.getSlug()});
-//        }
-//        return jdbcTemplate.queryForObject(QueryForThread.findThread(), new Object[] {threadModel.getSlug(), threadModel.getId()}, _getThread);
-//    }

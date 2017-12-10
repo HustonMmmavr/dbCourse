@@ -12,7 +12,7 @@ public class VoteView implements AbstractView {
 
     @JsonCreator
     public VoteView(@JsonProperty("nickname") String nickname,
-                    @JsonProperty("vote") Integer vote) {
+                    @JsonProperty("voice") Integer vote) {
         this.nickname = nickname;
         this.vote = vote;
     }

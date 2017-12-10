@@ -38,6 +38,16 @@ public class QueryForThread {
         return findThread() + "  WHERE thread.slug = ?::CITEXT";
     }
 
+    static public String updatePostCount() {
+        return "UPDATE forums SET posts = posts + ? WHERE forums.id = ?";
+    }
+
+    static public String insertVote() {return "INSERT INTO votes (owner_id, thread_id, vote) VALUES(?,?,?)";}
+    static public String updateVote() {return "UPDATE votes SET vote = ? WHERE owner_id =? AND thread_id = ?";}
+    static public String getVoteSum() {return "SELECT SUM(vote) FROM votes WHERE thread_id = ?";}
+    static public String updateVotes() {return "UPDATE threads SET votes = ? WHERE id = ?";}
+
+
 //    static public String findThreadById() {
 //        return "SELECT _user.nickname, thread.created, forum.slug AS forum_slug, thread.id, thread.message, thread.slug AS thread_slug, " +
 //                "thread.title, thread.votes " +

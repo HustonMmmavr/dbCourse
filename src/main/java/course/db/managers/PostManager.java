@@ -10,7 +10,9 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.constraints.NotNull;
+import java.awt.peer.ListPeer;
 import java.util.List;
 
 @Service
@@ -31,14 +33,11 @@ public class PostManager {
             return new StatusManagerRequest(ManagerResponseCodes.DB_ERROR, dAx);
         }
         return new StatusManagerRequest(ManagerResponseCodes.OK);
-        //        catch (DuplicateKeyException ex) {
-//            return new StatusManagerRequest(ManagerResponseCodes.CONFILICT, ex);
-//        }
     }
 
     public StatusManagerRequest create(List<PostModel> postModelList, ThreadModel threadModel) {
         try {
-                postDAO.createByThreadIdOrSlug(postModelList, threadModel);
+            postDAO.createByThreadIdOrSlug(postModelList, threadModel);
         }
         catch (DuplicateKeyException dKx) {
             return new StatusManagerRequest(ManagerResponseCodes.CONFILICT, dKx);
@@ -51,7 +50,20 @@ public class PostManager {
         }
         return new StatusManagerRequest(ManagerResponseCodes.OK);
     }
-//    public StatusManagerRequest findParent(Pos)
+
+    public StatusManagerRequest findSorted(List<PostModel> postModels, ThreadModel threadModel,                                           Integer limit, Integer since, String sort, Boolean desc) {
+        try {
+           List<PostModel> models = postDAO.findSorted(threadModel, limit, since, sort, desc);
+           for (PostModel model : models) {
+               postModels.add(model);
+           }
+        } catch (EmptyResultDataAccessException eRx) {
+            return new StatusManagerRequest(ManagerResponseCodes.NO_RESULT, eRx);
+        } catch (DataAccessException dAx) {
+            return new StatusManagerRequest(ManagerResponseCodes.DB_ERROR, dAx);
+        }
+        return new StatusManagerRequest(ManagerResponseCodes.OK);
+    }
 
     public StatusManagerRequest updatePost(PostModel postModel) {
         try {

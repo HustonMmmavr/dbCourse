@@ -41,7 +41,7 @@ public class AbstractDAO {
 
     protected RowMapper<PostModel> _getPostModel = (rs, rowNum) -> {
         String date = getDateFormat(rs.getTimestamp("created"));
-        return new PostModel(rs.getInt("id"), rs.getInt("parent"), rs.getString("nickname"), rs.getString("message"),
+        return new PostModel(rs.getInt("id"), rs.getInt("parent_id"), rs.getString("nickname"), rs.getString("message"),
                 rs.getBoolean("is_edited"), rs.getString("slug"),
                 rs.getInt("thread_id"), date);
     };

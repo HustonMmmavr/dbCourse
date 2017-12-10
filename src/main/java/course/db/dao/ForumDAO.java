@@ -6,6 +6,7 @@ import course.db.db_queries.QueryForUserProfile;
 import course.db.models.ForumModel;
 import course.db.models.ThreadModel;
 import course.db.models.UserProfileModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -20,6 +21,8 @@ import java.util.TimeZone;
 public class ForumDAO extends AbstractDAO {
     @NotNull
     private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
     public ForumDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }

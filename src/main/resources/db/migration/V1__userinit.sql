@@ -1,6 +1,6 @@
 CREATE EXTENSION IF NOT EXISTS CITEXT;
 
-SET SYNCHRONOUS_COMMIT = 'off';
+-- SET SYNCHRONOUS_COMMIT = 'off';
 
 CREATE TABLE IF NOT EXISTS userprofiles (
   id       SERIAL PRIMARY KEY,
@@ -30,15 +30,19 @@ CREATE TABLE IF NOT EXISTS threads (
   slug     CITEXT UNIQUE
 );
 
+
 CREATE TABLE IF NOT EXISTS posts (
   id SERIAL PRIMARY KEY,
-  parent    INTEGER     DEFAULT 0,
+  parent_id    INTEGER     DEFAULT 0,
   author_id   INTEGER REFERENCES userprofiles (id) ON DELETE CASCADE   NOT NULL,
   created   TIMESTAMPTZ DEFAULT NOW(),
   forum_id  INTEGER REFERENCES forums (id) ON DELETE CASCADE  NOT NULL,
   is_edited BOOLEAN     DEFAULT FALSE,
   message   TEXT        DEFAULT NULL,
-  thread_id INTEGER REFERENCES threads (id) ON DELETE CASCADE NOT NULL
+  thread_id INTEGER REFERENCES threads (id) ON DELETE CASCADE NOT NULL,
+  id_of_root INTEGER,
+  path_to_post INTEGER []
+
 );
 
 

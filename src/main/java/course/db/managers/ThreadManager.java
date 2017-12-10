@@ -2,6 +2,7 @@ package course.db.managers;
 
 import course.db.dao.ThreadDAO;
 import course.db.models.ThreadModel;
+import course.db.models.VoteModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
@@ -21,6 +22,23 @@ public class ThreadManager {
         try {
             ThreadModel model = threadDAO.findBySlugOrId(threadModel);
             threadModel.copy(model);
+        }
+        catch (EmptyResultDataAccessException eRx) {
+            return new StatusManagerRequest(ManagerResponseCodes.NO_RESULT, eRx);
+        }
+        catch (DataAccessException dAx) {
+            return new StatusManagerRequest(ManagerResponseCodes.DB_ERROR, dAx);
+        }
+        return new StatusManagerRequest(ManagerResponseCodes.OK);
+    }
+
+    public StatusManagerRequest setVote(VoteModel voteModel, ThreadModel threadModel) {
+        try {
+            ThreadModel model = threadDAO.setVote(voteModel, threadModel);
+            threadModel.copy(model);
+        }
+        catch (DuplicateKeyException dAx) {
+            return new StatusManagerRequest(ManagerResponseCodes.CONFILICT, dAx);
         }
         catch (EmptyResultDataAccessException eRx) {
             return new StatusManagerRequest(ManagerResponseCodes.NO_RESULT, eRx);

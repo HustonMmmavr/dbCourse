@@ -4,6 +4,7 @@ import course.db.managers.ManagerResponseCodes;
 import course.db.managers.StatusManagerRequest;
 import course.db.models.PostModel;
 import course.db.models.ThreadModel;
+import course.db.models.VoteModel;
 import course.db.views.*;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.StandardProtocolFamily;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,8 +80,11 @@ public class ThreadController extends AbstractController {
             case DB_ERROR:
                 return new ResponseEntity<>(new ErrorView(status2.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return new ResponseEntity<>(posts, null, HttpStatus.CREATED);
+        List<PostView> postViews = new ArrayList<>();
+        for (PostModel postModel: postModelList) {
+            postViews.add(postModel.toView());
+        }
+        return new ResponseEntity<>(postViews, null, HttpStatus.CREATED);
     }
 
 
@@ -117,31 +122,72 @@ public class ThreadController extends AbstractController {
             case CONFILICT:
                 return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.CONFLICT); //
             default:
-                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.NOT_FOUND); //
+                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR); //
         }
 
     }
 
     @RequestMapping(path="/{slug_or_id}/posts", method= RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AbstractView> getPosts(@PathVariable(value = "slug_or_id") String slug_or_id,
+    public ResponseEntity<Object> getPosts(@PathVariable(value = "slug_or_id") String slug_or_id,
                                                  @RequestParam(value="limit",required = false) Integer limit,
                                                  @RequestParam(value="since",required = false) Integer since,
                                                  @RequestParam(value="sort",required = false) String sort,
                                                  @RequestParam(value="desc",required = false) Boolean desc) {
-        return new ResponseEntity<>(new ErrorView("f"), null, HttpStatus.OK);
+        ThreadModel threadModel = new  ThreadModel();
+        checkAndSetSlugOrId(slug_or_id, threadModel);
+        StatusManagerRequest status = threadManager.findThreadBySlugOrId(threadModel);
+
+        switch (status.getCode()) {
+            case NO_RESULT:
+                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.NOT_FOUND);
+            case DB_ERROR:
+                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+
+        List<PostModel> postModels =  new ArrayList<>();
+
+        StatusManagerRequest status1 = postManager.findSorted(postModels, threadModel, limit, since, sort, desc);
+
+        switch (status1.getCode()) {
+            case OK:
+                List<PostView> postViews = new ArrayList<>();
+                for (PostModel model : postModels) {
+                    postViews.add(model.toView());
+                }
+                return new ResponseEntity<>(postViews, null, HttpStatus.OK); //
+            case NO_RESULT:
+                return new ResponseEntity<>(new ErrorView(status1.getMessage()), null, HttpStatus.NOT_FOUND); //
+            default:
+                return new ResponseEntity<>(new ErrorView(status1.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR); //
+        }
+
+//            return ResponseEntity.status(HttpStatus.OK).body(result);
+//        } catch (DataAccessException ex) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Error(ex.getMessage()));
+//        }
+//        return new ResponseEntity<>(new ErrorView("f"), null, HttpStatus.OK);
         // TODO there sort
     }
 
     
     @RequestMapping(path="/{slug_or_id}/vote", method= RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AbstractView> voteThread(@RequestBody VoteView voteView) {
+    public ResponseEntity<AbstractView> voteThread(@RequestBody VoteView voteView, @PathVariable String slug_or_id) {
 
-        Integer vote = voteView.getVote();
-        String author = voteView.getNickname();
+        ThreadModel threadModel = new  ThreadModel();
+        checkAndSetSlugOrId(slug_or_id, threadModel);
 
-//        StatusManagerRequest statusManagerRequest = threadManager.
-
-        return new ResponseEntity(new ErrorView(""), null, HttpStatus.NOT_FOUND);
+        StatusManagerRequest status = threadManager.setVote(new VoteModel(voteView), threadModel);
+        switch (status.getCode()) {
+            case OK:
+                return new ResponseEntity<>(threadModel.toView(), null, HttpStatus.OK);
+            case NO_RESULT:
+                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.NOT_FOUND); //
+            case CONFILICT:
+                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.CONFLICT); //
+            default:
+                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR); //
+        }
     }
 }
