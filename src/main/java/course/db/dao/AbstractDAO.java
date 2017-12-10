@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
@@ -19,14 +20,17 @@ public class AbstractDAO {
     public void clear(){}
     public Integer count() {return 0;}
 
-    //(Integer votes, Integer id, String title, String author, String message, String created, String forum, Str
-    protected RowMapper<ThreadModel> _getThreadModel = (rs, rowNum) -> {
-        final Timestamp timestamp = rs.getTimestamp("created");
-        final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    private String getDateFormat(Timestamp tp) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return dateFormat.format(tp.getTime());
+    }
+
+    protected RowMapper<ThreadModel> _getThreadModel = (rs, rowNum) -> {
+        String date = getDateFormat(rs.getTimestamp("created"));
         return new ThreadModel(
             rs.getInt("votes"), rs.getInt("id"), rs.getString("title"), rs.getString("nickname"),
-            rs.getString("message"), dateFormat.format(timestamp.getTime()), rs.getString("forum_slug") ,rs.getString("thread_slug")
+            rs.getString("message"), date, rs.getString("forum_slug") ,rs.getString("thread_slug")
         );
     };
 
@@ -35,13 +39,14 @@ public class AbstractDAO {
             rs.getInt("threads"));
 
 
-    protected RowMapper<PostModel> _getPostModel = (rs, rowNum) -> new PostModel(
-
-    );
+    protected RowMapper<PostModel> _getPostModel = (rs, rowNum) -> {
+        String date = getDateFormat(rs.getTimestamp("created"));
+        return new PostModel(rs.getInt("id"), rs.getInt("parent"), rs.getString("nickname"), rs.getString("message"),
+                rs.getBoolean("is_edited"), rs.getString("slug"),
+                rs.getInt("thread_id"), date);
+    };
 
     protected RowMapper<UserProfileModel> _getUserModel = (rs, rowNum) ->
             new UserProfileModel(rs.getString("nickname"), rs.getString("fullname"),
                     rs.getString("about"), rs.getString("email"));
-
-
 }

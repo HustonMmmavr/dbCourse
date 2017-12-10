@@ -22,8 +22,16 @@ public class QueryForThread {
                 "  JOIN forums forum ON (thread.forum_id = forum.id) ";
     }
 
+    public static String findThreadIdBySlug() {
+        return "SELECT id FROM threads WHERE slug = ?::CITEXT";
+    }
+
     static public String findThreadById() {
         return findThread() + "  WHERE thread.id = ?";
+    }
+
+    static public String findForum() {
+        return "SELECT forum_id FROM threads WHERE id = ?";
     }
 
     static public String findThreadBySlug() {

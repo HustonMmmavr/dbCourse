@@ -38,12 +38,7 @@ public class PostManager {
 
     public StatusManagerRequest create(List<PostModel> postModelList, ThreadModel threadModel) {
         try {
-            if (threadModel.getId() != null) {
-//                postDAO.createByForumId(postModelList, threadModel);
-            }
-            else {
-//                postDAO.createByForumSlug(postModelList, threadModel);
-            }
+                postDAO.createByThreadIdOrSlug(postModelList, threadModel);
         }
         catch (DuplicateKeyException dKx) {
             return new StatusManagerRequest(ManagerResponseCodes.CONFILICT, dKx);

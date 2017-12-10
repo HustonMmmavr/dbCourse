@@ -6,7 +6,10 @@ public class QueryForPost {
 //    static public String getById() {
 //        return "SELECT * FROM posts where id = ?";
 //    }
-
+    static public String createPost() {
+        return "INSERT INTO posts (author_id, created, forum_id, id, message, parent, thread_id, path, root_id) " +
+                "VALUES(?, ?, ?, ?, ?, ?, ?, array_append(?, ?), ?)";
+    }
     // join
     static public String getById() {
         return "SELECT _user.nickname, ";
