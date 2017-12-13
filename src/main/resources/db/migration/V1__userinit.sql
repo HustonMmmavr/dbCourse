@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS userprofiles (
 CREATE TABLE IF NOT EXISTS forums (
   id      SERIAL PRIMARY KEY,
   owner_id INTEGER REFERENCES userprofiles (id) ON DELETE CASCADE NOT NULL,
+--   owner_name CITEXT NOT NULL,
   title   TEXT NOT NULL,
   slug    CITEXT UNIQUE                                   NOT NULL,
   posts   INTEGER DEFAULT 0,
@@ -22,7 +23,9 @@ CREATE TABLE IF NOT EXISTS forums (
 CREATE TABLE IF NOT EXISTS threads (
   id SERIAL PRIMARY KEY,
   author_id  INTEGER REFERENCES userprofiles (id) ON DELETE CASCADE  NOT NULL,
+  --author_nickname CITEXT NOT NULL,
   forum_id INTEGER REFERENCES forums (id) ON DELETE CASCADE NOT NULL,
+  --forum_slug CITEXT NOT NULL,
   title    TEXT  NOT NULL,
   created  TIMESTAMPTZ DEFAULT NOW(),
   message  TEXT        DEFAULT NULL,
@@ -42,8 +45,16 @@ CREATE TABLE IF NOT EXISTS posts (
   thread_id INTEGER REFERENCES threads (id) ON DELETE CASCADE NOT NULL,
   id_of_root INTEGER,
   path_to_post INTEGER []
-
+--   author_name CITEXT NOT NULL,
+--  forum_slug CITEXT NOT NULL
 );
+
+-- CREATE TABLE IF NOT EXIST forum_and_users (
+--   id SERIAL PRIMARY KEY,
+--   user_id INTEGER REFERENCES userprofiles (id) ON DELETE CASCADE NOT NULL,
+-- --   user_nickname CITEXT NOT NULL,
+--   forum_id INTEGER REFERENCES forums (id) ON DELETE CASCADE NOT NULL
+-- );
 
 
 CREATE TABLE IF NOT EXISTS votes (
@@ -52,3 +63,5 @@ CREATE TABLE IF NOT EXISTS votes (
   vote INTEGER DEFAULT 0,
   CONSTRAINT one_owner_thread_pair UNIQUE (owner_id, thread_id)
 );
+
+

@@ -10,7 +10,6 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.constraints.NotNull;
 import java.awt.peer.ListPeer;
 import java.util.List;
@@ -51,7 +50,8 @@ public class PostManager {
         return new StatusManagerRequest(ManagerResponseCodes.OK);
     }
 
-    public StatusManagerRequest findSorted(List<PostModel> postModels, ThreadModel threadModel,                                           Integer limit, Integer since, String sort, Boolean desc) {
+    public StatusManagerRequest findSorted(List<PostModel> postModels, ThreadModel threadModel,
+                                           Integer limit, Integer since, String sort, Boolean desc) {
         try {
            List<PostModel> models = postDAO.findSorted(threadModel, limit, since, sort, desc);
            for (PostModel model : models) {

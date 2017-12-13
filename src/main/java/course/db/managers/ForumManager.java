@@ -58,6 +58,7 @@ public class ForumManager {
     public StatusManagerRequest findThreads(ForumModel forumModel, Integer limit, String since, Boolean desc,
                                             List<ThreadView> threadViewList) {
         try {
+//            ForumModel newForumModel = forumDAO.get(forumModel.getSlug());
             List<ThreadModel> userProfileModels = forumDAO.getThreads(forumModel.getSlug(), limit, since, desc);
             for (ThreadModel model : userProfileModels) {
                 threadViewList.add(model.toView());

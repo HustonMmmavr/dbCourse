@@ -4,7 +4,6 @@ import course.db.db_queries.QueryForForums;
 import course.db.db_queries.QueryForUserProfile;
 import course.db.models.UserProfileModel;
 import course.db.views.UserProfileView;
-import org.apache.catalina.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;

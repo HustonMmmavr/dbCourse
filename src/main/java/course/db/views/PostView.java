@@ -3,7 +3,6 @@ package course.db.views;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 
-import javax.persistence.criteria.CriteriaBuilder;
 
 public class PostView implements AbstractView {
     private Integer id;
@@ -72,11 +71,11 @@ public class PostView implements AbstractView {
         this.message = message;
     }
 
-    public Boolean getEdited() {
+    public Boolean getIsEdited() {
         return isEdited;
     }
 
-    public void setEdited(Boolean edited) {
+    public void setIsEdited(Boolean edited) {
         isEdited = edited;
     }
 

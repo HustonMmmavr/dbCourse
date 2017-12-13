@@ -110,7 +110,7 @@ public class ThreadController extends AbstractController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AbstractView> setDetails(@RequestBody ThreadView threadView,
                                                    @PathVariable(value = "slug_or_id") String slug_or_id) {
-        final ThreadModel threadModel = new ThreadModel();
+        final ThreadModel threadModel = new ThreadModel(threadView);
         checkAndSetSlugOrId(slug_or_id, threadModel);
 
         StatusManagerRequest status = threadManager.updateThread(threadModel);

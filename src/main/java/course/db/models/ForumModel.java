@@ -3,6 +3,7 @@ package course.db.models;
 import course.db.views.ForumView;
 
 public class ForumModel {
+//    private Integer id;
     private String title;
     private String user;
     private String slug;

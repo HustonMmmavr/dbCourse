@@ -18,7 +18,11 @@ public class PostDetailsModel {
     }
 
     public PostDetailsView toView() {
-        return new PostDetailsView(this.author.toView(), this.post.toView(), this.thread.toView(), this.forum.toView());
+
+        return new PostDetailsView(this.author == null ? null : this.author.toView(),
+                this.post == null ? null :  this.post.toView(),
+                this.thread == null ? null : this.thread.toView()
+                ,this.forum == null ? null : this.forum.toView());
     }
 
     public void copy(PostDetailsModel other) {

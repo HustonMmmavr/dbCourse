@@ -13,7 +13,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +53,7 @@ public class ThreadDAO extends AbstractDAO {
     public void updateThread(ThreadModel threadModel) {
         StringBuilder builder = new StringBuilder("UPDATE threads SET");
         List<Object> args = new ArrayList<>();
+        int res;
         if (threadModel.getMessage() != null) {
             builder.append(" message = ?,");
             args.add(threadModel.getMessage());
@@ -72,18 +72,23 @@ public class ThreadDAO extends AbstractDAO {
             }
             else {
                 builder.append(" WHERE slug = ?::CITEXT");
-                args.add(threadModel.getTitle());
+                args.add(threadModel.getSlug());
             }
-            jdbcTemplate.update(builder.toString(), args.toArray());
+            res = jdbcTemplate.update(builder.toString(), args.toArray());
         }
     }
 
+    //TODO check thread
 
     public ThreadModel setVote(VoteModel voteModel, ThreadModel threadModel) {
         Integer userId = jdbcTemplate.queryForObject(QueryForUserProfile.getIdByNick(), Integer.class, voteModel.getNickname());
         Integer threadId;
-        if (threadModel.getId() != null)
+        if (threadModel.getId() != null) {
+
+
             threadId = threadModel.getId();
+            ThreadModel newmodl = jdbcTemplate.queryForObject(QueryForThread.findThreadById(), new Object[]{threadId}, _getThreadModel);
+        }
         else
             threadId = jdbcTemplate.queryForObject(QueryForThread.findThreadIdBySlug(), new Object[] {threadModel.getSlug()}, Integer.class);
         try {

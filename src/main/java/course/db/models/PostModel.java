@@ -1,5 +1,6 @@
 package course.db.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import course.db.views.PostView;
 
 public class PostModel {
@@ -7,6 +8,7 @@ public class PostModel {
     private Integer parent;
     private String author;
     private String message;
+    @JsonProperty("isEdited")
     private Boolean isEdited;
     private String forum;
     private Integer thread;
@@ -30,7 +32,7 @@ public class PostModel {
         this.setCreated(postView.getCreated());
         this.setId(postView.getId());
         this.setForum(postView.getForum());
-        this.setEdited(postView.getEdited());
+        this.setEdited(postView.getIsEdited());
         this.setMessage(postView.getMessage());
         this.setParent(postView.getParent());
         this.setThread(postView.getThread());
@@ -41,7 +43,7 @@ public class PostModel {
         this.setCreated(other.getCreated());
         this.setId(other.getId());
         this.setForum(other.getForum());
-        this.setEdited(other.getEdited());
+        this.setEdited(other.getIsEdited());
         this.setMessage(other.getMessage());
         this.setParent(other.getParent());
         this.setThread(other.getThread());
@@ -79,7 +81,7 @@ public class PostModel {
         this.message = message;
     }
 
-    public Boolean getEdited() {
+    public Boolean getIsEdited() {
         return isEdited;
     }
 

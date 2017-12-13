@@ -12,9 +12,6 @@ import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -85,7 +82,6 @@ public class PostDAO extends AbstractDAO {
         return jdbcTemplate.query(QueryForPost.postsFlat(limit, since, desc), list.toArray(), _getPostModel);
     }
 
-    @Transactional
     public void createByThreadIdOrSlug(List<PostModel> postModelList, ThreadModel threadModel) {
         Integer threadId;
         if (threadModel.getId() != null)
@@ -97,11 +93,12 @@ public class PostDAO extends AbstractDAO {
         Timestamp created = new Timestamp(System.currentTimeMillis());
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        try {
-            Connection conn = jdbcTemplate.getDataSource().getConnection();
+        try (
+            Connection conn = jdbcTemplate.getDataSource().getConnection()){
             conn.setAutoCommit(false);
-            try {
-                PreparedStatement createPost = conn.prepareStatement(QueryForPost.createPost());
+            try (
+                PreparedStatement createPost = conn.prepareStatement(QueryForPost.createPost()))
+            {
                 for (PostModel postModel : postModelList) {
                     Integer userId = jdbcTemplate.queryForObject(QueryForUserProfile.getIdByNick(), new Object[]{postModel.getAuthor()}, Integer.class);
                     Integer postId = jdbcTemplate.queryForObject(QueryForPost.getId(), Integer.class);

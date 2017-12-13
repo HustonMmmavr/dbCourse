@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path="/post")
+@RequestMapping(path="/api/post")
 public class PostController extends AbstractController {
     @RequestMapping(path="/{id}/details", method= RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AbstractView> getDetails(@PathVariable(value="id") Integer id,
@@ -22,7 +22,7 @@ public class PostController extends AbstractController {
         StatusManagerRequest status = postManager.findPostDetailsById(id, related, postDetailsModel);//(forumModel);
         switch(status.getCode()) {
             case OK:
-                return new ResponseEntity<>(postDetailsModel.toView(), null, HttpStatus.CREATED); //
+                return new ResponseEntity<>(postDetailsModel.toView(), null, HttpStatus.OK); //
             case NO_RESULT:
                 return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.NOT_FOUND);
             default:
@@ -44,7 +44,7 @@ public class PostController extends AbstractController {
             status = postManager.findById(id_, postModel);
         switch(status.getCode()) {
             case OK:
-                return new ResponseEntity<>(postModel.toView(), null, HttpStatus.CREATED); //
+                return new ResponseEntity<>(postModel.toView(), null, HttpStatus.OK); //
             case NO_RESULT:
                 return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.NOT_FOUND);
 //            case CONFILICT:

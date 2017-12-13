@@ -45,11 +45,12 @@ public class ForumDAO extends AbstractDAO {
         int forumId = jdbcTemplate.queryForObject(QueryForForums.findForumIdBySlug(), new Object[] {slug}, Integer.class);
         List<Object> list = new ArrayList<>();
         list.add(forumId);
-        list.add(forumId);
-        list.add(forumId);
+        //list.add(forumId);
+        //list.add(forumId);
+//        if (since == null) since = "1";
 
         if (since != null) {
-            builder.append(" AND _user.nickname " + (desc == Boolean.TRUE  ? "< ? " : "> ? "));
+            builder.append(" AND _user.nickname " + (desc == Boolean.TRUE  ? "< ?::CITEXT " : "> ?::CITEXT "));
             list.add(since);
         }
 
@@ -69,7 +70,6 @@ public class ForumDAO extends AbstractDAO {
         List<Object> list = new ArrayList<>();
         list.add(forumId);
 
-        //since=" 2017-11-27 22:54:55.047629+03";
         if (since != null) {
             builder.append(" AND thread.created " + (desc == Boolean.TRUE  ? " <= ?::TIMESTAMPTZ " : " >= ?::TIMESTAMPTZ "));
             list.add(since);

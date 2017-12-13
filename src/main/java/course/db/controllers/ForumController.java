@@ -19,6 +19,7 @@ public class ForumController extends AbstractController {
     @RequestMapping(path="/create", method= RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
     produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AbstractView> createForum(@RequestBody ForumView forumView) {
+
         ForumModel forumModel = new ForumModel(forumView);
         StatusManagerRequest status = forumManager.create(forumModel);
         switch(status.getCode()) {
@@ -57,6 +58,7 @@ public class ForumController extends AbstractController {
     @RequestMapping(path="/{slug}/create", method= RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AbstractView> createBranch(@PathVariable(value="slug") String slug, @RequestBody ThreadView threadView) {
+
         threadView.setForum(slug);
         ThreadModel threadModel = new ThreadModel(threadView);
         StatusManagerRequest status = threadManager.createThread(threadModel);

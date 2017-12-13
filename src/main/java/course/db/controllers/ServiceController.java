@@ -10,11 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.criteria.CriteriaBuilder;
 
 
 @RestController
-@RequestMapping(path="/service")
+@RequestMapping(path="/api/service")
 public class ServiceController extends AbstractController {
     @RequestMapping(path="/clear", method= RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AbstractView> clearService() {
