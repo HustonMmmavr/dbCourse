@@ -56,7 +56,7 @@ public class ThreadController extends AbstractController {
 
                 switch (status1.getCode()) {
                     case NO_RESULT:
-                        return new ResponseEntity<>(new ErrorView(status1.getMessage()), null, HttpStatus.NOT_FOUND);
+                        return new ResponseEntity<>(new ErrorView(status1.getMessage()), null, HttpStatus.CONFLICT);
                     case DB_ERROR:
                         return new ResponseEntity<>(new ErrorView(status1.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR);
                 }
@@ -78,7 +78,7 @@ public class ThreadController extends AbstractController {
             case CONFILICT:
                 return new ResponseEntity<>(new ErrorView(status2.getMessage()), null, HttpStatus.CONFLICT);
             case DB_ERROR:
-                return new ResponseEntity<>(new ErrorView(status2.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(new ErrorView(status2.getMessage()), null, HttpStatus.NOT_FOUND);
         }
         List<PostView> postViews = new ArrayList<>();
         for (PostModel postModel: postModelList) {

@@ -93,12 +93,10 @@ public class PostDAO extends AbstractDAO {
         Timestamp created = new Timestamp(System.currentTimeMillis());
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        try (
-            Connection conn = jdbcTemplate.getDataSource().getConnection()){
+        try (Connection conn = jdbcTemplate.getDataSource().getConnection()){
             conn.setAutoCommit(false);
-            try (
-                PreparedStatement createPost = conn.prepareStatement(QueryForPost.createPost()))
-            {
+            try (PreparedStatement createPost = conn.prepareStatement(QueryForPost.createPost(), Statement.NO_GENERATED_KEYS);)  {
+//                createPost = conn.prepareStatement(QueryForPost.createPost(), Statement.NO_GENERATED_KEYS);
                 for (PostModel postModel : postModelList) {
                     Integer userId = jdbcTemplate.queryForObject(QueryForUserProfile.getIdByNick(), new Object[]{postModel.getAuthor()}, Integer.class);
                     Integer postId = jdbcTemplate.queryForObject(QueryForPost.getId(), Integer.class);
@@ -111,16 +109,20 @@ public class PostDAO extends AbstractDAO {
                 }
                 createPost.executeBatch();
                 conn.commit();
+//                createPost.c
             }
-            catch (SQLException ex) {
+            catch (Exception ex) {
                 conn.rollback();
-                conn.setAutoCommit(true);
-                throw new RecoverableDataAccessException(ex.getLocalizedMessage());
+//                conn.setAutoCommit(true);
+                throw new DataRetrievalFailureException(ex.getLocalizedMessage());
             }
-            conn.setAutoCommit(true);
+            finally {
+                conn.setAutoCommit(true);
+            }
         }
         catch (SQLException ex) {
-            throw new RecoverableDataAccessException("fail");
+            int c = 1;
+            throw new DataRetrievalFailureException(ex.getLocalizedMessage());
         }
         jdbcTemplate.update(QueryForThread.updatePostCount(), new Object[] { postModelList.size(), forumId});
     }
