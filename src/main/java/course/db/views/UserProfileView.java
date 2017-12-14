@@ -2,7 +2,6 @@ package course.db.views;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sun.istack.internal.Nullable;
 
 public class UserProfileView implements AbstractView {
     private String nickname;
@@ -12,7 +11,7 @@ public class UserProfileView implements AbstractView {
 
     public UserProfileView(){}
     @JsonCreator
-    public UserProfileView(@JsonProperty("nickname") @Nullable String nickname,
+    public UserProfileView(@JsonProperty("nickname")  String nickname,
                            @JsonProperty("fullname") String fullname,
                            @JsonProperty("about")String about,
                            @JsonProperty("email") String email) {

@@ -1,6 +1,5 @@
 package course.db.controllers;
 
-import course.db.managers.ManagerResponseCodes;
 import course.db.managers.StatusManagerRequest;
 import course.db.models.PostDetailsModel;
 import course.db.models.PostModel;

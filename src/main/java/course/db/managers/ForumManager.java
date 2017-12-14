@@ -12,7 +12,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
+//import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Service
@@ -20,7 +20,7 @@ public class ForumManager {
     private final ForumDAO forumDAO;
 
     @Autowired
-    public ForumManager(@NotNull ForumDAO forumDAO) {this.forumDAO = forumDAO;}
+    public ForumManager(ForumDAO forumDAO) {this.forumDAO = forumDAO;}
 
     public StatusManagerRequest create(ForumModel forumModel) {
         try {

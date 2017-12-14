@@ -1,7 +1,6 @@
 package course.db.controllers;
 
 import course.db.views.AbstractView;
-import course.db.views.ErrorView;
 import course.db.views.StatusView;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

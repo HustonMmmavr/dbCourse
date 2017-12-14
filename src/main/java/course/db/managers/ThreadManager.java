@@ -9,14 +9,14 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
+//import javax.validation.constraints.NotNull;
 
 @Service
 public class ThreadManager {
     private final ThreadDAO threadDAO;
 
     @Autowired
-    public ThreadManager(@NotNull ThreadDAO threadDAO) {this.threadDAO = threadDAO;}
+    public ThreadManager(ThreadDAO threadDAO) {this.threadDAO = threadDAO;}
 
     public StatusManagerRequest findThreadBySlugOrId(ThreadModel threadModel) {
         try {

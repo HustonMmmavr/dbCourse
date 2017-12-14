@@ -9,7 +9,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
+//import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Service
@@ -17,9 +17,9 @@ public class UserProfileManager {
     private final UserProfileDAO userProfileDAO;
 
     @Autowired
-    public UserProfileManager(@NotNull UserProfileDAO userProfileDAO) {this.userProfileDAO = userProfileDAO; }
+    public UserProfileManager(UserProfileDAO userProfileDAO) {this.userProfileDAO = userProfileDAO; }
 
-    public StatusManagerRequest createUser(@NotNull UserProfileModel userProfileModel) {
+    public StatusManagerRequest createUser(UserProfileModel userProfileModel) {
         try {
             userProfileDAO.create(userProfileModel);
         }

@@ -1,7 +1,6 @@
 package course.db.dao;
 
 import course.db.db_queries.QueryForForums;
-import course.db.db_queries.QueryForThread;
 import course.db.db_queries.QueryForUserProfile;
 import course.db.models.ForumModel;
 import course.db.models.ThreadModel;
@@ -11,10 +10,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.validation.constraints.NotNull;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TimeZone;
 
 
 @Repository
@@ -31,7 +28,6 @@ public class ForumDAO extends AbstractDAO {
         Integer id = jdbcTemplate.queryForObject(QueryForForums.findForumIdBySlug(), new Object[]{model.getSlug()}, Integer.class);
         model.setId(id);
     }
-
 
     public void create(@NotNull ForumModel forumModel) {
         int userId = jdbcTemplate.queryForObject(QueryForUserProfile.getIdByNick(), new Object[]

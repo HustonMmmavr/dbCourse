@@ -1,8 +1,5 @@
 package course.db.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sun.istack.internal.Nullable;
 import course.db.views.UserProfileView;
 
 public class UserProfileModel {

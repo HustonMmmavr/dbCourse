@@ -5,15 +5,12 @@ import course.db.db_queries.QueryForPost;
 import course.db.db_queries.QueryForThread;
 import course.db.db_queries.QueryForUserProfile;
 import course.db.models.*;
-import jdk.nashorn.internal.scripts.JD;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataRetrievalFailureException;
-import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import javax.validation.constraints.NotNull;
-import javax.xml.crypto.Data;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -60,6 +57,8 @@ public class PostDAO extends AbstractDAO {
 
     public List<PostModel> findSorted(ThreadModel threadModel, Integer limit, Integer since, String sort, Boolean desc) {
         List<Object> list = new ArrayList<>();
+        StringBuilder builder = new StringBuilder();
+//        builder.a
         list.add(threadModel.getId());
         if (since != null) {
             list.add(since);

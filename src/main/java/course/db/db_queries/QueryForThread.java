@@ -1,13 +1,7 @@
 package course.db.db_queries;
 
-import com.sun.xml.internal.ws.server.ServerRtException;
 
 public class QueryForThread {
-
-//    static public String create() {
-//        return "INSERT INTO threads (author_id, forum_id, title, created, message, vote, slug)" +
-//                "VALUES(?, ?, ?, CASE WHEN ? IS NULL THEN NOW() ELSE ? END"
-//    }
 
     // TODO maybe function in db
     static public String createNoDate() {
@@ -55,6 +49,11 @@ public class QueryForThread {
     static public String getVoteSum() {return "SELECT SUM(vote) FROM votes WHERE thread_id = ?";}
     static public String updateVotes() {return "UPDATE threads SET votes = ? WHERE id = ?";}
 
+
+    //    static public String create() {
+//        return "INSERT INTO threads (author_id, forum_id, title, created, message, vote, slug)" +
+//                "VALUES(?, ?, ?, CASE WHEN ? IS NULL THEN NOW() ELSE ? END"
+//    }
 
 //    static public String findThreadById() {
 //        return "SELECT _user.nickname, thread.created, forum.slug AS forum_slug, thread.id, thread.message, thread.slug AS thread_slug, " +

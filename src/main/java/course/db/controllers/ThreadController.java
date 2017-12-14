@@ -1,18 +1,15 @@
 package course.db.controllers;
 
-import course.db.managers.ManagerResponseCodes;
 import course.db.managers.StatusManagerRequest;
 import course.db.models.PostModel;
 import course.db.models.ThreadModel;
 import course.db.models.VoteModel;
 import course.db.views.*;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.StandardProtocolFamily;
 import java.util.ArrayList;
 import java.util.List;
 

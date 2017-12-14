@@ -4,14 +4,10 @@ import course.db.models.ForumModel;
 import course.db.models.PostModel;
 import course.db.models.ThreadModel;
 import course.db.models.UserProfileModel;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
@@ -45,10 +41,23 @@ public class AbstractDAO {
 
     protected RowMapper<PostModel> _getPostModel = (rs, rowNum) -> {
         String date = getDateFormat(rs.getTimestamp("created"));
+        return new PostModel(rs.getInt("id"), rs.getInt("parent_id"), rs.getString("author_name"),
+                rs.getString("message"), rs.getBoolean("is_edited"), rs.getString("forum_slug"),
+                rs.getInt("thread_id"), date);
+    };
+
+    protected RowMapper<PostModel> _oldgetPostModel = (rs, rowNum) -> {
+        String date = getDateFormat(rs.getTimestamp("created"));
         return new PostModel(rs.getInt("id"), rs.getInt("parent_id"), rs.getString("nickname"), rs.getString("message"),
                 rs.getBoolean("is_edited"), rs.getString("slug"),
                 rs.getInt("thread_id"), date);
     };
+//    protected RowMapper<PostModel> _getPostModel = (rs, rowNum) -> {
+//        String date = getDateFormat(rs.getTimestamp("created"));
+//        return new PostModel(rs.getInt("id"), rs.getInt("parent_id"), rs.getString("nickname"), rs.getString("message"),
+//                rs.getBoolean("is_edited"), rs.getString("slug"),
+//                rs.getInt("thread_id"), date);
+//    };
 
     protected RowMapper<UserProfileModel> _getUserModel = (rs, rowNum) ->
             new UserProfileModel(rs.getString("nickname"), rs.getString("fullname"),
@@ -57,20 +66,20 @@ public class AbstractDAO {
 
     // ---------------------------------------------------------------------------------
 
-    protected RowMapper<ForumModel> _oldgetFullForumModel = (rs, rowNum) -> new ForumModel(
-            rs.getInt("id"), rs.getString("title"), rs.getString("nickname"), rs.getString("slug"), rs.getInt("posts"),
-            rs.getInt("threads"));
-
-    protected RowMapper<ForumModel> _oldgetForumModel = (rs, rowNum) -> new ForumModel(
-            rs.getString("title"), rs.getString("nickname"), rs.getString("slug"), rs.getInt("posts"),
-            rs.getInt("threads"));
-
-
-    protected RowMapper<ThreadModel> _oldgetThreadModel = (rs, rowNum) -> {
-        String date = getDateFormat(rs.getTimestamp("created"));
-        return new ThreadModel(
-                rs.getInt("votes"), rs.getInt("id"), rs.getString("title"), rs.getString("nickname"),
-                rs.getString("message"), date, rs.getString("forum_slug") ,rs.getString("thread_slug")
-        );
-    };
+//    protected RowMapper<ForumModel> _oldgetFullForumModel = (rs, rowNum) -> new ForumModel(
+//            rs.getInt("id"), rs.getString("title"), rs.getString("nickname"), rs.getString("slug"), rs.getInt("posts"),
+//            rs.getInt("threads"));
+//
+//    protected RowMapper<ForumModel> _oldgetForumModel = (rs, rowNum) -> new ForumModel(
+//            rs.getString("title"), rs.getString("nickname"), rs.getString("slug"), rs.getInt("posts"),
+//            rs.getInt("threads"));
+//
+//
+//    protected RowMapper<ThreadModel> _oldgetThreadModel = (rs, rowNum) -> {
+//        String date = getDateFormat(rs.getTimestamp("created"));
+//        return new ThreadModel(
+//                rs.getInt("votes"), rs.getInt("id"), rs.getString("title"), rs.getString("nickname"),
+//                rs.getString("message"), date, rs.getString("forum_slug") ,rs.getString("thread_slug")
+//        );
+//    };
 }

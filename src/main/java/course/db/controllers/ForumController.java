@@ -24,7 +24,6 @@ public class ForumController extends AbstractController {
         StatusManagerRequest status = forumManager.create(forumModel);
         switch(status.getCode()) {
             case OK:
-                // TODO read from db //maybe
                 return new ResponseEntity<>(forumModel.toView(), null, HttpStatus.CREATED); //
             case NO_RESULT:
                 return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.NOT_FOUND);

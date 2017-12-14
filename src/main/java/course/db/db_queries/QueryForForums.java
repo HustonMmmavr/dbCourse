@@ -39,10 +39,6 @@ public class QueryForForums {
                 "WHERE forum.id = ?";
     }
 
-    static public String incThreadCount() {
-        return "UPDATE forums SET threads=threads+1 WHERE id = ?";
-    }
-
     static public String count() {
         return "SELECT COUNT(*) FROM forums";
     }
@@ -52,6 +48,10 @@ public class QueryForForums {
     }
 
     // ----------------------------------------------------------------------------------------------
+
+    static public String incThreadCount() {
+        return "UPDATE forums SET threads=threads+1 WHERE id = ?";
+    }
 
     static public String oldfindFullForumModel() { return "SELECT forum.id, forum.title, forum.posts, forum.threads, forum.slug, _user.nickname " +
             "FROM forums forum JOIN userprofiles _user ON (forum.owner_id=_user.id) " +

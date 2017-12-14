@@ -16,16 +16,19 @@ public class QueryForPost {
     }
 
     static public String getById() {
+        return "SELECT created, id, is_edited, message, parent_id, thread_id, forum_slug, autor_name " +
+                "FROM posts WHERE id = ? ";
+    };
+
+    static public String oldgetById() {
         return "SELECT post.created, post.id, post.is_edited, post.message, post.parent_id, post.thread_id, forum.slug, _user.nickname " +
                 "FROM posts post JOIN userprofiles _user ON (_user.id = post.author_id) JOIN forums forum ON (forum.id = post.forum_id) " +
                 "WHERE post.id = ? ";
     };
 
     static private String findPosts() {
-        return "SELECT u.nickname, p.created, f.slug, p.id, p.is_edited, p.message, p.parent_id, p.thread_id " +
-                "FROM userprofiles u JOIN posts p ON (u.id = p.author_id) " +
-            "JOIN forums f ON (f.id = p.forum_id) " +
-            "WHERE p.thread_id = ? ";
+        return "SELECT created, forum_slug, id, is_edited, message, parent_id, thread_id, author_name FROM posts " +
+            "WHERE thread_id = ?";
     }
 
     public static String postsFlat(final Integer limit, final Integer since, final Boolean desc ) {

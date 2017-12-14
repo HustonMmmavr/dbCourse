@@ -1,7 +1,6 @@
 package course.db.views;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 
 public class PostView implements AbstractView {
