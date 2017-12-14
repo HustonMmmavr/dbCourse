@@ -44,7 +44,7 @@ public class ThreadManager {
             return new StatusManagerRequest(ManagerResponseCodes.NO_RESULT, eRx);
         }
         catch (DataAccessException dAx) {
-            return new StatusManagerRequest(ManagerResponseCodes.DB_ERROR, dAx);
+            return new StatusManagerRequest(ManagerResponseCodes.NO_RESULT, dAx);
         }
         return new StatusManagerRequest(ManagerResponseCodes.OK);
     }

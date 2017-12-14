@@ -1,5 +1,6 @@
 package course.db.dao;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import course.db.db_queries.QueryForForums;
 import course.db.db_queries.QueryForPost;
 import course.db.db_queries.QueryForThread;
@@ -54,11 +55,10 @@ public class PostDAO extends AbstractDAO {
         }
     }
 
-
     public List<PostModel> findSorted(ThreadModel threadModel, Integer limit, Integer since, String sort, Boolean desc) {
         List<Object> list = new ArrayList<>();
         StringBuilder builder = new StringBuilder();
-//        builder.a
+
         list.add(threadModel.getId());
         if (since != null) {
             list.add(since);
@@ -66,20 +66,68 @@ public class PostDAO extends AbstractDAO {
         if (limit != null) {
             list.add(limit);
         }
-        if (sort == null) {
-            return jdbcTemplate.query(QueryForPost.postsFlat(limit, since, desc), list.toArray(), _getPostModel);
+
+        if (sort == null)
+            sort = "flat";
+
+        String sortOrder;
+        String signSort;
+        if (desc == Boolean.TRUE) {
+            sortOrder = " DESC ";
+            signSort = " < ";
         }
+        else {
+            sortOrder = " ASC ";
+            signSort = " > ";
+        }
+
         switch (sort) {
             case "flat" :
-                return jdbcTemplate.query(QueryForPost.postsFlat(limit, since, desc), list.toArray(), _getPostModel);
+                builder.append(QueryForPost.flatOrTreeposts());
+                if (since != null) {
+                    builder.append(" AND id ");
+                    builder.append(signSort + "? ");
+                }
+                builder.append(" ORDER BY id ");
+                builder.append(sortOrder);
+                if (limit != null) {
+                    builder.append(" LIMIT ?");
+                }
+                break;
             case "tree" :
-                return jdbcTemplate.query(QueryForPost.postsTree(limit,since,desc), list.toArray(), _getPostModel);
+                builder.append(QueryForPost.flatOrTreeposts());
+                if (since != null) {
+                    builder.append(" AND path_to_post");
+                    builder.append(signSort);
+                    builder.append("(SELECT path_to_post FROM posts WHERE id = ?)");
+                }
+                builder.append(" ORDER BY path_to_post ");
+                builder.append(sortOrder);
+                if (limit != null) {
+                    builder.append(" LIMIT ?");
+                }
+                break;
             case "parent_tree" :
-                return jdbcTemplate.query(QueryForPost.postsParentTree(limit, since, desc), list.toArray(), _getPostModel);
+                builder.append(QueryForPost.findPosts());
+                builder.append("WHERE id_of_root IN (SELECT id FROM posts WHERE thread_id = ? AND parent_id = 0 ");
+                if (since != null) {
+                    builder.append(" AND path_to_post");
+                    builder.append(signSort);
+                    builder.append("(SELECT path_to_post FROM posts WHERE id = ?) ");
+                }
+                builder.append(" ORDER BY id ");
+                builder.append(sortOrder);
+                if (limit != null) {
+                    builder.append(" LIMIT ?");
+                }
+                builder.append(")");
+                builder.append("ORDER BY path_to_post ");
+                builder.append(sortOrder);
+                break;
             default:
                 break;
         }
-        return jdbcTemplate.query(QueryForPost.postsFlat(limit, since, desc), list.toArray(), _getPostModel);
+        return jdbcTemplate.query(builder.toString(), list.toArray(), _getPostModel);
     }
 
     public void createByThreadIdOrSlug(List<PostModel> postModelList, ThreadModel threadModel) throws DataAccessException {

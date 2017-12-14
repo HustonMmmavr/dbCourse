@@ -44,6 +44,7 @@ public class QueryForThread {
         return "UPDATE forums SET posts = posts + ? WHERE forums.id = ?";
     }
 
+    static public String createOrUpdateVote() {return "select create_or_update_vote(?, ?, ?)";}
     static public String insertVote() {return "INSERT INTO votes (owner_id, thread_id, vote) VALUES(?,?,?)";}
     static public String updateVote() {return "UPDATE votes SET vote = ? WHERE owner_id =? AND thread_id = ?";}
     static public String getVoteSum() {return "SELECT SUM(vote) FROM votes WHERE thread_id = ?";}

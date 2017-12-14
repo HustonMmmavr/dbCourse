@@ -1,15 +1,20 @@
 package course.db.dao;
 
 import course.db.db_queries.QueryForForums;
+import course.db.db_queries.QueryForPost;
 import course.db.db_queries.QueryForThread;
 import course.db.db_queries.QueryForUserProfile;
 import course.db.models.ThreadModel;
 import course.db.models.VoteModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,14 +78,58 @@ public class ThreadDAO extends AbstractDAO {
         }
     }
 
-    //TODO check thread
-
     public ThreadModel setVote(VoteModel voteModel, ThreadModel threadModel) {
+        Integer userId = jdbcTemplate.queryForObject(QueryForUserProfile.getIdByNick(), Integer.class, voteModel.getNickname());
+        Connection conn = null;
+        CallableStatement callableStatement = null;
+
+        Integer threadId;
+        if (threadModel.getId() != null) {
+            threadId = threadModel.getId();
+        } else
+            threadId = jdbcTemplate.queryForObject(QueryForThread.findThreadIdBySlug(), new Object[]{threadModel.getSlug()}, Integer.class);
+
+        try {
+            conn = jdbcTemplate.getDataSource().getConnection();
+            conn.setAutoCommit(false);
+            try {
+                callableStatement = conn.prepareCall(QueryForThread.createOrUpdateVote());
+                callableStatement.setInt(1, userId);
+                callableStatement.setInt(2, threadId);
+                callableStatement.setInt(3, voteModel.getVote());
+                callableStatement.execute();
+                conn.setAutoCommit(true);
+            } catch (SQLException sEx) {
+                conn.rollback();
+                throw new DataRetrievalFailureException(sEx.getLocalizedMessage());
+            } finally {
+                if (callableStatement != null)
+                    callableStatement.close();
+                conn.setAutoCommit(true);
+            }
+        } catch (SQLException ex) {
+            throw new DataRetrievalFailureException(ex.getLocalizedMessage());
+        } finally {
+            try {
+                if (conn != null)
+                    conn.close();
+            } catch (Exception e) {
+                throw new DataRetrievalFailureException(e.getLocalizedMessage());
+            }
+        }
+
+        return jdbcTemplate.queryForObject(QueryForThread.findThreadById(), new Object[] {threadId}, _getThreadModel);
+    }
+
+
+
+        //TODO check thread
+
+    public ThreadModel oldsetVote(VoteModel voteModel, ThreadModel threadModel) {
         Integer userId = jdbcTemplate.queryForObject(QueryForUserProfile.getIdByNick(), Integer.class, voteModel.getNickname());
         Integer threadId;
         if (threadModel.getId() != null) {
             threadId = threadModel.getId();
-            ThreadModel newmodl = jdbcTemplate.queryForObject(QueryForThread.findThreadById(), new Object[]{threadId}, _getThreadModel);
         }
         else
             threadId = jdbcTemplate.queryForObject(QueryForThread.findThreadIdBySlug(), new Object[] {threadModel.getSlug()}, Integer.class);
