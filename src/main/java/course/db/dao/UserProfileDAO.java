@@ -1,21 +1,16 @@
 package course.db.dao;
 
-import course.db.db_queries.QueryForForums;
 import course.db.db_queries.QueryForUserProfile;
 import course.db.models.UserProfileModel;
-import course.db.views.UserProfileView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public class UserProfileDAO extends AbstractDAO {
-    @NotNull
     @Autowired
     JdbcTemplate jdbcTemplate;
 
@@ -24,7 +19,7 @@ public class UserProfileDAO extends AbstractDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void create(@NotNull UserProfileModel userProfileModel) {
+    public void create(UserProfileModel userProfileModel) {
         jdbcTemplate.update(QueryForUserProfile.create(), userProfileModel.getAbout(), userProfileModel.getEmail(),
                             userProfileModel.getFullname(), userProfileModel.getNickname());
     }
@@ -35,29 +30,26 @@ public class UserProfileDAO extends AbstractDAO {
     }
 
     public void change(UserProfileModel userProfileModel) {
-        final StringBuilder sql = new StringBuilder("UPDATE userprofiles SET");
-        final List<Object> args = new ArrayList<>();
-        String about = userProfileModel.getAbout();
-        String fullname = userProfileModel.getFullname();
-        String email = userProfileModel.getEmail();
+        final StringBuilder builder = new StringBuilder("UPDATE userprofiles SET");
+        final List<Object> list = new ArrayList<>();
 
-        if (about != null) {
-            sql.append(" about = ?,");
-            args.add(about);
+        if (userProfileModel.getAbout() != null) {
+            builder.append(" about = ?,");
+            list.add(userProfileModel.getAbout());
         }
-        if (email != null) {
-            sql.append(" email = ?::CITEXT,");
-            args.add(email);
+        if (userProfileModel.getEmail() != null) {
+            builder.append(" email = ?::CITEXT,");
+            list.add(userProfileModel.getEmail());
         }
-        if (fullname != null) {
-            sql.append(" fullname = ?,");
-            args.add(fullname);
+        if (userProfileModel.getFullname() != null) {
+            builder.append(" fullname = ?,");
+            list.add(userProfileModel.getFullname());
         }
-        if (!args.isEmpty()) {
-            sql.delete(sql.length() - 1, sql.length());
-            sql.append(" WHERE nickname = ?::CITEXT");
-            args.add(userProfileModel.getNickname());
-            jdbcTemplate.update(sql.toString(), args.toArray());
+        if (!list.isEmpty()) {
+            builder.delete(builder.length() - 1, builder.length());
+            builder.append(" WHERE nickname = ?::CITEXT");
+            list.add(userProfileModel.getNickname());
+            jdbcTemplate.update(builder.toString(), list.toArray());
         }
     }
 

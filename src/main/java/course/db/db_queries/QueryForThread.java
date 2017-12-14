@@ -16,10 +16,9 @@ public class QueryForThread {
     }
 
     static private String findThread() {
-        return "SELECT _user.nickname, thread.created, forum.slug AS forum_slug, thread.id, thread.message, thread.slug AS thread_slug, " +
-                "thread.title, thread.votes " +
-                "FROM threads thread JOIN userprofiles _user ON (thread.author_id = _user.id)" +
-                "  JOIN forums forum ON (thread.forum_id = forum.id) ";
+        return "SELECT author_name, created, forum_slug, id, message, slug, title, votes FROM threads";
+//                "FROM threads thread JOIN userprofiles _user ON (thread.author_id = _user.id)" +
+//                "  JOIN forums forum ON (thread.forum_id = forum.id) ";
     }
 
     public static String findThreadIdBySlug() {
@@ -27,14 +26,23 @@ public class QueryForThread {
     }
 
     static public String findThreadById() {
-        return findThread() + "  WHERE thread.id = ?";
+        return findThread() + "  WHERE id = ?";
     }
 
     static public String findForum() {
         return "SELECT forum_id FROM threads WHERE id = ?";
     }
 
+    static public String oldfindThreadById() {
+        return findThread() + "  WHERE thread.id = ?";
+    }
+
+
     static public String findThreadBySlug() {
+        return findThread() + "  WHERE slug = ?::CITEXT";
+    }
+
+    static public String oldfindThreadBySlug() {
         return findThread() + "  WHERE thread.slug = ?::CITEXT";
     }
 

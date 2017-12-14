@@ -31,8 +31,10 @@ public class ThreadDAO extends AbstractDAO {
     public ThreadModel createThread(ThreadModel threadModel) {
         Integer userId = jdbcTemplate.queryForObject(QueryForUserProfile.getIdByNick(), new Object[] {threadModel.getAuthor()},
                 Integer.class);
+
         Integer forumId = jdbcTemplate.queryForObject(QueryForForums.findForumIdBySlug(), new Object[] {threadModel.getForum()},
                 Integer.class);
+
         String created = threadModel.getCreated();
         Integer id;
         if (created == null) {
@@ -53,7 +55,7 @@ public class ThreadDAO extends AbstractDAO {
     public void updateThread(ThreadModel threadModel) {
         StringBuilder builder = new StringBuilder("UPDATE threads SET");
         List<Object> args = new ArrayList<>();
-        int res;
+
         if (threadModel.getMessage() != null) {
             builder.append(" message = ?,");
             args.add(threadModel.getMessage());
@@ -74,7 +76,7 @@ public class ThreadDAO extends AbstractDAO {
                 builder.append(" WHERE slug = ?::CITEXT");
                 args.add(threadModel.getSlug());
             }
-            res = jdbcTemplate.update(builder.toString(), args.toArray());
+            jdbcTemplate.update(builder.toString(), args.toArray());
         }
     }
 
@@ -84,8 +86,6 @@ public class ThreadDAO extends AbstractDAO {
         Integer userId = jdbcTemplate.queryForObject(QueryForUserProfile.getIdByNick(), Integer.class, voteModel.getNickname());
         Integer threadId;
         if (threadModel.getId() != null) {
-
-
             threadId = threadModel.getId();
             ThreadModel newmodl = jdbcTemplate.queryForObject(QueryForThread.findThreadById(), new Object[]{threadId}, _getThreadModel);
         }

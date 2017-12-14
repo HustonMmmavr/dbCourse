@@ -21,6 +21,13 @@ public class QueryForPost {
                 "WHERE post.id = ? ";
     };
 
+    static private String findPosts() {
+        return "SELECT u.nickname, p.created, f.slug, p.id, p.is_edited, p.message, p.parent_id, p.thread_id " +
+                "FROM userprofiles u JOIN posts p ON (u.id = p.author_id) " +
+            "JOIN forums f ON (f.id = p.forum_id) " +
+            "WHERE p.thread_id = ? ";
+    }
+
     public static String postsFlat(final Integer limit, final Integer since, final Boolean desc ) {
         StringBuilder builder = new StringBuilder();
         builder.append("SELECT u.nickname, p.created, f.slug, p.id, p.is_edited, p.message, p.parent_id, p.thread_id ");

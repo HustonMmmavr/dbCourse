@@ -67,7 +67,13 @@ public class PostManager {
 
     public StatusManagerRequest updatePost(PostModel postModel) {
         try {
-            PostModel model = postDAO.updatePost(postModel);
+            PostModel model;
+            if (postModel.getMessage() != null) {
+                model = postDAO.updatePost(postModel);
+            }
+            else {
+                model =postDAO.findById(postModel.getId());
+            }
             postModel.copy(model);
         }
         catch (DuplicateKeyException dKx) {
@@ -110,29 +116,3 @@ public class PostManager {
         return postDAO.count();
     }
 }
-
-
-//    public StatusManagerRequest findPostDetailsById(PostModel postModel) {
-//        try {
-//            PostModel model = postDAO.findById(postModel.getId());
-//            postModel.copy(model);
-//        }
-//        catch (EmptyResultDataAccessException eRx) {
-//            return new StatusManagerRequest(ManagerResponseCodes.NO_RESULT, eRx);
-//        }
-//        catch (DataAccessException dAx) {
-//            return new StatusManagerRequest(ManagerResponseCodes.DB_ERROR, dAx);
-//        }
-//        return new StatusManagerRequest(ManagerResponseCodes.OK);
-//    }
-
-
-//            model.setId(postModel.getId());
-
-//            model.setId(postModel.getId());
-
-//        }
-//        catch (DataAccessException dAx) {
-//            return ManagerResponseCodes.DB_ERROR;
-//        }
-//        return ManagerResponseCodes.OK;

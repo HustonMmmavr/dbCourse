@@ -87,19 +87,11 @@ public class ForumController extends AbstractController {
                                                  ) {
         ForumModel forumModel = new ForumModel();
         forumModel.setSlug(slug);
-        StatusManagerRequest status = forumManager.findForum(forumModel);
-        switch (status.getCode()) {
-            case NO_RESULT:
-                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.NOT_FOUND);
-            case DB_ERROR:
-                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR);
-            default:
-                break;
-        }
 
         List<ThreadView> threadViewList = new ArrayList<>();
         StatusManagerRequest status1 = forumManager.findThreads(forumModel, limit, since, desc, threadViewList);
         switch (status1.getCode()) {
+//            cake OK:
             case NO_RESULT:
                 return new ResponseEntity<>(new ErrorView(status1.getMessage()), null, HttpStatus.NOT_FOUND);
             case DB_ERROR:
@@ -119,26 +111,39 @@ public class ForumController extends AbstractController {
                                                 ) {
         ForumModel forumModel = new ForumModel();
         forumModel.setSlug(slug);
-        StatusManagerRequest status = forumManager.findForum(forumModel);
-        switch (status.getCode()) {
-            case NO_RESULT:
-                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.NOT_FOUND);
-            case DB_ERROR:
-                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR);
-            default:
-                break;
-        }
 
         // TODO make table users forums
         List<UserProfileView> userProfileList = new ArrayList<>();
-        StatusManagerRequest status1 = forumManager.findUsers(forumModel, limit, since, desc, userProfileList);
-        switch (status1.getCode()) {
+        StatusManagerRequest status = forumManager.findUsers(forumModel, limit, since, desc, userProfileList);
+        switch (status.getCode()) {
             case OK:
                 return new ResponseEntity<>(userProfileList, null, HttpStatus.OK);
             case NO_RESULT:
-                return new ResponseEntity<>(new ErrorView(status1.getMessage()), null, HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.NOT_FOUND);
             default:
-                return new ResponseEntity<>(new ErrorView(status1.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
+
+
+//        StatusManagerRequest status = forumManager.findForum(forumModel);
+//        switch (status.getCode()) {
+//            case NO_RESULT:
+//                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.NOT_FOUND);
+//            case DB_ERROR:
+//                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR);
+//            default:
+//                break;
+//        }
+
+//        StatusManagerRequest status = forumManager.findForum(forumModel);
+//        switch (status.getCode()) {
+//            case NO_RESULT:
+//                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.NOT_FOUND);
+//            case DB_ERROR:
+//                return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR);
+//            default:
+//                break;
+//        }
+

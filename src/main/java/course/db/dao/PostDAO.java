@@ -96,12 +96,12 @@ public class PostDAO extends AbstractDAO {
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         Connection conn = null;
         PreparedStatement createPost = null;
-        try {//(Connection conn = jdbcTemplate.getDataSource().getConnection()){
+
+        try {
             conn = jdbcTemplate.getDataSource().getConnection();
             conn.setAutoCommit(false);
-            try {//(PreparedStatement createPost = conn.prepareStatement(QueryForPost.createPost(), Statement.NO_GENERATED_KEYS);)  {
-//                createPost = conn.prepareStatement(QueryForPost.createPost(), Statement.NO_GENERATED_KEYS);
-                createPost = conn.prepareStatement(QueryForPost.createPost(), Statement.NO_GENERATED_KEYS);
+            try {
+                createPost = conn.prepareStatement(QueryForPost.createPost());
                 for (PostModel postModel : postModelList) {
                     Integer userId = jdbcTemplate.queryForObject(QueryForUserProfile.getIdByNick(), new Object[]{postModel.getAuthor()}, Integer.class);
                     Integer postId = jdbcTemplate.queryForObject(QueryForPost.getId(), Integer.class);
@@ -114,7 +114,6 @@ public class PostDAO extends AbstractDAO {
                 }
                 createPost.executeBatch();
                 conn.commit();
-//                createPost.c
             }
             catch (Exception ex) {
                 conn.rollback();
@@ -165,19 +164,17 @@ public class PostDAO extends AbstractDAO {
         return new PostDetailsModel(userProfileModel, postModel, threadModel, forumModel);
     }
 
-    public PostModel updatePost(PostModel old) {
-        PostModel postModel = jdbcTemplate.queryForObject(QueryForPost.getById(), new Object[] {old.getId()}, _getPostModel);
-//        final PostModel post = findById(id);
-        String message = old.getMessage();
+    public PostModel updatePost(PostModel newPostModel) {
+        PostModel oldPostModel = jdbcTemplate.queryForObject(QueryForPost.getById(), new Object[] {newPostModel.getId()}, _getPostModel);
         StringBuilder builder = new StringBuilder("UPDATE posts SET message = ?");
-        if (!message.equals(postModel.getMessage())) {
+        if (!(newPostModel.getMessage()).equals(oldPostModel.getMessage())) {
             builder.append(", is_edited = TRUE");
-            postModel.setEdited(true);
-            postModel.setMessage(message);
+            oldPostModel.setEdited(true);
+            oldPostModel.setMessage(newPostModel.getMessage());
         }
         builder.append(" WHERE id = ?");
-        jdbcTemplate.update(builder.toString(), message, old.getId());
-        return postModel;
+        jdbcTemplate.update(builder.toString(), newPostModel.getMessage(), newPostModel.getId());
+        return oldPostModel;
     }
 
     @Override

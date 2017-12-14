@@ -27,27 +27,31 @@ public class ForumDAO extends AbstractDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public ForumModel create(@NotNull ForumModel forumModel) {
+    public void findForumId(ForumModel model) {
+        Integer id = jdbcTemplate.queryForObject(QueryForForums.findForumIdBySlug(), new Object[]{model.getSlug()}, Integer.class);
+        model.setId(id);
+    }
+
+
+    public void create(@NotNull ForumModel forumModel) {
         int userId = jdbcTemplate.queryForObject(QueryForUserProfile.getIdByNick(), new Object[]
                 {forumModel.getUser()}, Integer.class);
         jdbcTemplate.update(QueryForForums.create(), userId, forumModel.getTitle(), forumModel.getSlug());
-//        return jdbcTemplate.queryForObject(QueryForForums.create(), new Object[] {userId, forumModel.getTitle(), forumModel.getSlug()}, _getForumModel);
-        return null;
     }
 
-    public ForumModel getForumBySlug(String slug) {
+    public ForumModel findFullForumBySlug(ForumModel model){
+        return jdbcTemplate.queryForObject(QueryForForums.findFullForumModel(), new Object[] {model.getSlug()}, _getFullForumModel);
+    }
+
+    public ForumModel findForumBySlug(String slug) {
         return jdbcTemplate.queryForObject(QueryForForums.findForumBySlug(), new Object[] {slug}, _getForumModel);
     }
 
     // TODO tr
-    public List<UserProfileModel> getUsers(String slug, Integer limit, String since, Boolean desc) {
+    public List<UserProfileModel> findUsers(ForumModel forumModel, Integer limit, String since, Boolean desc) {
         StringBuilder builder = new StringBuilder(QueryForForums.findUsers());
-        int forumId = jdbcTemplate.queryForObject(QueryForForums.findForumIdBySlug(), new Object[] {slug}, Integer.class);
         List<Object> list = new ArrayList<>();
-        list.add(forumId);
-        //list.add(forumId);
-        //list.add(forumId);
-//        if (since == null) since = "1";
+        list.add(forumModel.getId());
 
         if (since != null) {
             builder.append(" AND _user.nickname " + (desc == Boolean.TRUE  ? "< ?::CITEXT " : "> ?::CITEXT "));
@@ -64,18 +68,19 @@ public class ForumDAO extends AbstractDAO {
                 _getUserModel);
     }
 
-    public List<ThreadModel> getThreads(String slug, Integer limit, String since, Boolean desc) {
-        int forumId = jdbcTemplate.queryForObject(QueryForForums.findForumIdBySlug(), new Object[] {slug}, Integer.class);
+    public List<ThreadModel> findThreads(ForumModel forumModel, Integer limit, String since, Boolean desc) {
         StringBuilder builder = new StringBuilder(QueryForForums.findThreadsById());
         List<Object> list = new ArrayList<>();
-        list.add(forumId);
+        list.add(forumModel.getId());
 
         if (since != null) {
-            builder.append(" AND thread.created " + (desc == Boolean.TRUE  ? " <= ?::TIMESTAMPTZ " : " >= ?::TIMESTAMPTZ "));
+//            builder.append(" AND thread.created " + (desc == Boolean.TRUE  ? " <= ?::TIMESTAMPTZ " : " >= ?::TIMESTAMPTZ "));
+            builder.append(" AND created " + (desc == Boolean.TRUE  ? " <= ?::TIMESTAMPTZ " : " >= ?::TIMESTAMPTZ "));
             list.add(since);
         }
 
-        builder.append("ORDER by thread.created " + (desc == Boolean.TRUE  ? "DESC " : " "));
+//        builder.append("ORDER by thread.created " + (desc == Boolean.TRUE  ? "DESC " : " "));
+        builder.append("ORDER by created " + (desc == Boolean.TRUE  ? "DESC " : " "));
 
         if (limit != null) {
             builder.append("LIMIT ? ");
@@ -86,7 +91,7 @@ public class ForumDAO extends AbstractDAO {
                 _getThreadModel);
 
         for (ThreadModel model : models) {
-            model.setForum(slug);
+            model.setForum(forumModel.getSlug());
         }
         return models;
     }

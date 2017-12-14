@@ -10,7 +10,6 @@ public class ErrorModel {
         NO_RESULT,
         DB_ERROR
     }
-//    public ErrorModel() {}
 
 
     public ErrorModel(String message) {this.message = message;}

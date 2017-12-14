@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS userprofiles (
 CREATE TABLE IF NOT EXISTS forums (
   id      SERIAL PRIMARY KEY,
   owner_id INTEGER REFERENCES userprofiles (id) ON DELETE CASCADE NOT NULL,
---   owner_name CITEXT NOT NULL,
+  owner_name CITEXT,
   title   TEXT NOT NULL,
   slug    CITEXT UNIQUE                                   NOT NULL,
   posts   INTEGER DEFAULT 0,
@@ -23,9 +23,9 @@ CREATE TABLE IF NOT EXISTS forums (
 CREATE TABLE IF NOT EXISTS threads (
   id SERIAL PRIMARY KEY,
   author_id  INTEGER REFERENCES userprofiles (id) ON DELETE CASCADE  NOT NULL,
-  --author_nickname CITEXT NOT NULL,
+  author_name CITEXT,
   forum_id INTEGER REFERENCES forums (id) ON DELETE CASCADE NOT NULL,
-  --forum_slug CITEXT NOT NULL,
+  forum_slug CITEXT,
   title    TEXT  NOT NULL,
   created  TIMESTAMPTZ DEFAULT NOW(),
   message  TEXT        DEFAULT NULL,
@@ -63,5 +63,45 @@ CREATE TABLE IF NOT EXISTS votes (
   vote INTEGER DEFAULT 0,
   CONSTRAINT one_owner_thread_pair UNIQUE (owner_id, thread_id)
 );
+
+--------------------- TRIGGER FOR UPDATE forums ------------------------
+CREATE OR REPLACE FUNCTION insert_forum_func() RETURNS TRIGGER AS
+$insert_forums_trigger$
+  BEGIN
+    UPDATE forums SET owner_name = (SELECT nickname FROM userprofiles WHERE id = NEW.owner_id)
+      WHERE id = NEW.id;
+    RETURN NULL;
+  END;
+$insert_forums_trigger$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS insert_forums_trigger ON forums;
+CREATE TRIGGER insert_forums_trigger AFTER INSERT ON forums
+  FOR EACH ROW EXECUTE PROCEDURE insert_forum_func();
+---------------------------------------------------------------------
+
+
+
+------------------- TRIGGER FOR CREATE UPDATE threads ---------------
+CREATE OR REPLACE FUNCTION insert_threads_func() RETURNS TRIGGER AS
+$insert_threads_trigger$
+  BEGIN
+      UPDATE threads SET author_name = (SELECT nickname FROM userprofiles WHERE id = NEW.author_id),
+                      forum_slug = (SELECT slug FROM forums WHERE id = NEW.forum_id)
+      WHERE id = NEW.id;
+    RETURN NULL;
+  END;
+$insert_threads_trigger$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS insert_threads_trigger ON threads;
+CREATE TRIGGER insert_threads_trigger AFTER INSERT ON threads
+  FOR EACH ROW EXECUTE PROCEDURE insert_threads_func();
+
+-- CREATE PROCEDURE fill_created_forum();
+--
+-- CREATE PROCEDURE fill_r
+--
+-- CREATE PROCEDURE fill_inserted_post();
+--
+-- CREATE TRIGGER
 
 

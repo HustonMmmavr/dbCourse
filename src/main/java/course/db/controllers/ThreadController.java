@@ -161,13 +161,6 @@ public class ThreadController extends AbstractController {
             default:
                 return new ResponseEntity<>(new ErrorView(status1.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR); //
         }
-
-//            return ResponseEntity.status(HttpStatus.OK).body(result);
-//        } catch (DataAccessException ex) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Error(ex.getMessage()));
-//        }
-//        return new ResponseEntity<>(new ErrorView("f"), null, HttpStatus.OK);
-        // TODO there sort
     }
 
     

@@ -29,15 +29,30 @@ public class AbstractDAO {
     protected RowMapper<ThreadModel> _getThreadModel = (rs, rowNum) -> {
         String date = getDateFormat(rs.getTimestamp("created"));
         return new ThreadModel(
+                rs.getInt("votes"), rs.getInt("id"), rs.getString("title"), rs.getString("author_name"),
+                rs.getString("message"), date, rs.getString("forum_slug") ,rs.getString("slug")
+        );
+    };
+
+    protected RowMapper<ThreadModel> _oldgetThreadModel = (rs, rowNum) -> {
+        String date = getDateFormat(rs.getTimestamp("created"));
+        return new ThreadModel(
             rs.getInt("votes"), rs.getInt("id"), rs.getString("title"), rs.getString("nickname"),
             rs.getString("message"), date, rs.getString("forum_slug") ,rs.getString("thread_slug")
         );
     };
 
-    protected RowMapper<ForumModel> _getForumModel = (rs, rowNum) -> new ForumModel(
+    protected RowMapper<ForumModel> _getFullForumModel = (rs, rowNum) -> new ForumModel(
+            rs.getInt("id"), rs.getString("title"), rs.getString("nickname"), rs.getString("slug"), rs.getInt("posts"),
+            rs.getInt("threads"));
+
+    protected RowMapper<ForumModel> _oldgetForumModel = (rs, rowNum) -> new ForumModel(
             rs.getString("title"), rs.getString("nickname"), rs.getString("slug"), rs.getInt("posts"),
             rs.getInt("threads"));
 
+    protected RowMapper<ForumModel> _getForumModel = (rs, rowNum) -> new ForumModel(
+            rs.getString("title"), rs.getString("owner_name"), rs.getString("slug"), rs.getInt("posts"),
+            rs.getInt("threads"));
 
     protected RowMapper<PostModel> _getPostModel = (rs, rowNum) -> {
         String date = getDateFormat(rs.getTimestamp("created"));

@@ -24,9 +24,8 @@ public class ForumManager {
 
     public StatusManagerRequest create(ForumModel forumModel) {
         try {
-//            ForumModel model = forumDAO.create(forumModel);
             forumDAO.create(forumModel);
-            ForumModel model = forumDAO.getForumBySlug(forumModel.getSlug());
+            ForumModel model = forumDAO.findForumBySlug(forumModel.getSlug());
             forumModel.copy(model);
         }
         catch (EmptyResultDataAccessException eRx) {
@@ -43,7 +42,7 @@ public class ForumManager {
 
     public StatusManagerRequest findForum(ForumModel forumModel) {//, List<ForumView> forumViewList) {
         try {
-            ForumModel forum = forumDAO.getForumBySlug(forumModel.getSlug());
+            ForumModel forum = forumDAO.findForumBySlug(forumModel.getSlug());
             forumModel.copy(forum);
         }
         catch (EmptyResultDataAccessException eRx) {
@@ -58,8 +57,9 @@ public class ForumManager {
     public StatusManagerRequest findThreads(ForumModel forumModel, Integer limit, String since, Boolean desc,
                                             List<ThreadView> threadViewList) {
         try {
-//            ForumModel newForumModel = forumDAO.get(forumModel.getSlug());
-            List<ThreadModel> userProfileModels = forumDAO.getThreads(forumModel.getSlug(), limit, since, desc);
+            ForumModel findedForum = forumDAO.findFullForumBySlug(forumModel);
+
+            List<ThreadModel> userProfileModels = forumDAO.findThreads(findedForum, limit, since, desc);
             for (ThreadModel model : userProfileModels) {
                 threadViewList.add(model.toView());
             }
@@ -76,7 +76,9 @@ public class ForumManager {
     public StatusManagerRequest findUsers(ForumModel forumModel, Integer limit, String since, Boolean desc,
                                           List<UserProfileView> userProfileViewList) {
         try {
-            List<UserProfileModel> userProfileModels = forumDAO.getUsers(forumModel.getSlug(), limit, since, desc);
+            forumDAO.findForumId(forumModel);
+            List<UserProfileModel> userProfileModels = forumDAO.findUsers(forumModel, limit, since, desc);
+
             for (UserProfileModel model : userProfileModels) {
                 userProfileViewList.add(model.toView());
             }
@@ -104,40 +106,3 @@ public class ForumManager {
         return forumDAO.count();
     }
 }
-
-//    public ManagerResponseCodes createThread (ThreadModel threadModel) {
-//        try {
-//           ThreadModel createdThread =  threadDAOd.createThread(threadModel);
-//
-//           threadModel.setAuthor(createdThread.getAuthor());
-//           threadModel.setCreated(createdThread.getCreated());
-//           threadModel.setId(createdThread.getId());
-//           threadModel.setForum(createdThread.getForum());
-//           threadModel.setSlug(createdThread.getSlug());
-//           threadModel.setMessage(createdThread.getMessage());
-//           threadModel.setTitle(createdThread.getTitle());
-//           threadModel.setVotes(createdThread.getVotes());
-////           threadModel;
-//            //TODO fill data from
-//        }
-//        catch (EmptyResultDataAccessException ex) {
-//            return ManagerResponseCodes.NO_RESULT;
-//        }
-//        catch (DuplicateKeyException dex) {
-//            return ManagerResponseCodes.CONFILICT;
-//        }
-//        catch (DataAccessException d) {
-//            System.out.print(d.getMessage());
-//            return ManagerResponseCodes.DB_ERROR;
-//        }
-//        return ManagerResponseCodes.OK;
-//    }
-
-//        try {
-
-
-//        }
-//        catch (DataAccessException dAx) {
-//            return ManagerResponseCodes.DB_ERROR;
-//        }
-//        return ManagerResponseCodes.OK;

@@ -19,7 +19,7 @@ public class PostController extends AbstractController {
     public ResponseEntity<AbstractView> getDetails(@PathVariable(value="id") Integer id,
                                                    @RequestParam(value="related", required = false) String[] related) {
         PostDetailsModel postDetailsModel = new PostDetailsModel();
-        StatusManagerRequest status = postManager.findPostDetailsById(id, related, postDetailsModel);//(forumModel);
+        StatusManagerRequest status = postManager.findPostDetailsById(id, related, postDetailsModel);
         switch(status.getCode()) {
             case OK:
                 return new ResponseEntity<>(postDetailsModel.toView(), null, HttpStatus.OK); //
@@ -35,20 +35,12 @@ public class PostController extends AbstractController {
     public ResponseEntity<AbstractView> setDetails(@PathVariable(value="id") String id, @RequestBody PostView postView) {
         PostModel postModel = new PostModel(postView);
         postModel.setId(new Integer(id));
-        Integer id_ = new Integer(id);
-
-        StatusManagerRequest status;
-        if (postModel.getMessage() != null)
-            status = postManager.updatePost(postModel);//(forumModel);
-        else
-            status = postManager.findById(id_, postModel);
+        StatusManagerRequest status = postManager.updatePost(postModel);
         switch(status.getCode()) {
             case OK:
                 return new ResponseEntity<>(postModel.toView(), null, HttpStatus.OK); //
             case NO_RESULT:
                 return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.NOT_FOUND);
-//            case CONFILICT:
-//                return new ResponseEntity<>(new ErrorView("conflict"), null, HttpStatus.CONFLICT);
             default:
                 return new ResponseEntity<>(new ErrorView(status.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

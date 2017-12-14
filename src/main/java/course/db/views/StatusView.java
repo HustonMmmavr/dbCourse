@@ -1,15 +1,10 @@
 package course.db.views;
 
-import javax.validation.constraints.NotNull;
 
 public class StatusView implements AbstractView {
-//    @NotNull
     private Integer user;
-//    @NotNull
     private Integer forum;
-//    @NotNull
     private Integer thread;
-//    @NotNull
     private Integer post;
 
     public StatusView(Integer user, Integer forum, Integer thread, Integer post) {
