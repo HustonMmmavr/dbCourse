@@ -6,23 +6,13 @@ public class QueryForForums {
         return "INSERT INTO forums(owner_id, title, slug) VALUES (?, ?, ?::CITEXT)";
     }
 
-    static public String findFullForumModel() { return "SELECT forum.id, forum.title, forum.posts, forum.threads, forum.slug, _user.nickname " +
-            "FROM forums forum JOIN userprofiles _user ON (forum.owner_id=_user.id) " +
-            "WHERE forum.slug = ?::CITEXT";
+
+    static public String findFullForumModel() {
+        return "SELECT id, title, posts, threads, slug, owner_name FROM forums WHERE slug = ?::CITEXT";
     }
-    // TODO save user in database
-//    static public String create() {
-//        return "INSERT INTO forums(owner_id, title, slug) VALUES (?, ?, ?::CITEXT) RETURNING *";
-//    }
 
     public static String findForumBySlug() {
         return "SELECT  owner_name, title, slug,  posts, threads FROM FORUMS WHERE slug = ?::CITEXT";
-    }
-
-    public static String oldfindForumBySlug() {
-        return "SELECT forum.title, forum.posts, forum.threads, forum.slug, _user.nickname " +
-                "FROM forums forum JOIN userprofiles _user ON (forum.owner_id=_user.id) " +
-                "WHERE forum.slug = ?::CITEXT";
     }
 
 
@@ -35,27 +25,8 @@ public class QueryForForums {
                 "WHERE slug = ?::CITEXT";
     }
 
-    //TODO maybe subqu, denormalize
-
-
-    static public String oldfindThreads() {
-        return "SELECT _user.nickname, forum.slug as forum_slug, thread.id, thread.slug as thread_slug," +
-                "thread.created, thread.title, thread.message, thread.votes " +
-                "FROM threads thread JOIN userprofiles _user ON (thread.author_id = _user.id)" +
-                "JOIN forums forum ON (thread.forum_id = forum.id)" +
-                "WHERE thread.slug = ?::CITEXT ";
-    }
-
     public static String findThreadsById() {
         return "SELECT id, author_name, slug, forum_slug, created, title, message, votes FROM threads WHERE forum_id = ? ";
-//                " _user.nickname FROM userprofiles _user JOIN (SELECT * FROM threads WHERE forum_id=?) " +
-//                "thread  ON(thread.author_id=_user.id) JOIN forums forum ON (forum.id = thread.forum_id)";
-    }
-
-    public static String oldfindThreadsById() {
-        return "SELECT thread.id, thread.slug as thread_slug, forum.slug as forum_slug, thread.created, thread.title, thread.message, thread.votes, " +
-                " _user.nickname FROM userprofiles _user JOIN (SELECT * FROM threads WHERE forum_id=?) " +
-                "thread  ON(thread.author_id=_user.id) JOIN forums forum ON (forum.id = thread.forum_id)";
     }
 
 
@@ -65,10 +36,7 @@ public class QueryForForums {
                 "FROM forums forum LEFT JOIN threads thread ON (thread.forum_id=forum.id) " +
                 "LEFT JOIN posts post ON (forum.id = post.forum_id) " +
                 "JOIN userprofiles _user ON (_user.id = thread.author_id OR _user.id=post.author_id) " +
-                "WHERE forum.id = ?";// OR post.forum_id=? OR thread.forum_id=? ";
-
-//        _user.id=forum.owner_id OR
-
+                "WHERE forum.id = ?";
     }
 
     static public String incThreadCount() {
@@ -81,6 +49,40 @@ public class QueryForForums {
 
     static public String clear() {
         return "DELETE FROM forums";
+    }
+
+    // ----------------------------------------------------------------------------------------------
+
+    static public String oldfindFullForumModel() { return "SELECT forum.id, forum.title, forum.posts, forum.threads, forum.slug, _user.nickname " +
+            "FROM forums forum JOIN userprofiles _user ON (forum.owner_id=_user.id) " +
+            "WHERE forum.slug = ?::CITEXT";
+    }
+
+    // TODO save user in database
+//    static public String create() {
+//        return "INSERT INTO forums(owner_id, title, slug) VALUES (?, ?, ?::CITEXT) RETURNING *";
+//    }
+
+
+    public static String oldfindForumBySlug() {
+        return "SELECT forum.title, forum.posts, forum.threads, forum.slug, _user.nickname " +
+                "FROM forums forum JOIN userprofiles _user ON (forum.owner_id=_user.id) " +
+                "WHERE forum.slug = ?::CITEXT";
+    }
+
+    static public String oldfindThreads() {
+        return "SELECT _user.nickname, forum.slug as forum_slug, thread.id, thread.slug as thread_slug," +
+                "thread.created, thread.title, thread.message, thread.votes " +
+                "FROM threads thread JOIN userprofiles _user ON (thread.author_id = _user.id)" +
+                "JOIN forums forum ON (thread.forum_id = forum.id)" +
+                "WHERE thread.slug = ?::CITEXT ";
+    }
+
+
+    public static String oldfindThreadsById() {
+        return "SELECT thread.id, thread.slug as thread_slug, forum.slug as forum_slug, thread.created, thread.title, thread.message, thread.votes, " +
+                " _user.nickname FROM userprofiles _user JOIN (SELECT * FROM threads WHERE forum_id=?) " +
+                "thread  ON(thread.author_id=_user.id) JOIN forums forum ON (forum.id = thread.forum_id)";
     }
 }
 
