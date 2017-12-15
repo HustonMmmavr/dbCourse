@@ -47,6 +47,8 @@ public class ThreadDAO extends AbstractDAO {
                     userId, forumId, threadModel.getTitle(), threadModel.getCreated(), threadModel.getMessage(), 0, threadModel.getSlug()}, Integer.class);
         }
 
+//        jdbcTemplate.update(QueryForForums.addUser(), new Object[] {userId, forumId});
+
         return jdbcTemplate.queryForObject(QueryForThread.findThreadById(), new Object[] {id}, _getThreadModel);
     }
 

@@ -96,6 +96,9 @@ public class ThreadManager {
         catch (DataAccessException dAx) {
             return new StatusManagerRequest(ManagerResponseCodes.DB_ERROR, dAx);
         }
+        catch (Exception e) {
+            return new StatusManagerRequest(ManagerResponseCodes.DB_ERROR, e);
+        }
         return new StatusManagerRequest(ManagerResponseCodes.OK);
     }
 

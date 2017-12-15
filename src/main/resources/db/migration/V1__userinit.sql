@@ -49,12 +49,10 @@ CREATE TABLE IF NOT EXISTS posts (
   path_to_post INTEGER []
 );
 
--- CREATE TABLE IF NOT EXIST forum_and_users (
---   id SERIAL PRIMARY KEY,
---   user_id INTEGER REFERENCES userprofiles (id) ON DELETE CASCADE NOT NULL,
--- --   user_nickname CITEXT NOT NULL,
---   forum_id INTEGER REFERENCES forums (id) ON DELETE CASCADE NOT NULL
--- );
+CREATE TABLE IF NOT EXISTS forums_and_users (
+  user_id INTEGER REFERENCES userprofiles (id) ON DELETE CASCADE NOT NULL,
+  forum_id INTEGER REFERENCES forums (id) ON DELETE CASCADE NOT NULL
+);
 
 
 CREATE TABLE IF NOT EXISTS votes (
@@ -89,6 +87,7 @@ $insert_threads_trigger$
                       forum_slug = (SELECT slug FROM forums WHERE id = NEW.forum_id)
       WHERE id = NEW.id;
       UPDATE forums SET threads = threads + 1 WHERE id = NEW.forum_id;
+       INSERT INTO forums_and_users(user_id, forum_id) VALUES(NEW.author_id, NEW.forum_id);
     RETURN NULL;
   END;
 $insert_threads_trigger$ LANGUAGE plpgsql;
@@ -108,6 +107,7 @@ $insert_posts_trigger$
       UPDATE posts SET author_name = (SELECT nickname FROM userprofiles WHERE id = NEW.author_id),
                       forum_slug = (SELECT slug FROM forums WHERE id = NEW.forum_id)
       WHERE id = NEW.id;
+      INSERT INTO forums_and_users(user_id, forum_id) VALUES(NEW.author_id, NEW.forum_id);
     RETURN NULL;
   END;
 $insert_posts_trigger$ LANGUAGE plpgsql;

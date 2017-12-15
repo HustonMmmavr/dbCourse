@@ -143,7 +143,6 @@ public class PostDAO extends AbstractDAO {
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         Connection conn = null;
         PreparedStatement createPost = null;
-
         try {
             conn = jdbcTemplate.getDataSource().getConnection();
             conn.setAutoCommit(false);
@@ -155,7 +154,6 @@ public class PostDAO extends AbstractDAO {
                     fillStatment(createPost, postId, userId, threadId, created, forumId, postModel);
 
                     createPost.addBatch();
-
                     postModel.setCreated(dateFormat.format(created));
                     postModel.setId(postId);
                 }

@@ -29,14 +29,15 @@ public class QueryForForums {
         return "SELECT id, author_name, slug, forum_slug, created, title, message, votes FROM threads WHERE forum_id = ? ";
     }
 
-
-    // TODO anot
+    // OR subquery
     static public String findUsers() {
-        return "SELECT DISTINCT _user.id, _user.nickname, _user.about, _user.fullname, _user.email " +
-                "FROM forums forum LEFT JOIN threads thread ON (thread.forum_id=forum.id) " +
-                "LEFT JOIN posts post ON (forum.id = post.forum_id) " +
-                "JOIN userprofiles _user ON (_user.id = thread.author_id OR _user.id=post.author_id) " +
-                "WHERE forum.id = ?";
+               return "SELECT DISTINCT _user.id, _user.nickname, _user.about, _user.fullname, _user.email " +
+                "FROM forums_and_users forums_and_user JOIN userprofiles _user ON (forums_and_user.user_id = _user.id)" +
+                "WHERE forums_and_user.forum_id=?";
+    }
+
+    static public String addUser() {
+        return "INSERT INTO forums_and_users(user_id, forum_id) VALUES(?,?)";
     }
 
     static public String count() {
@@ -49,6 +50,14 @@ public class QueryForForums {
 
     // ----------------------------------------------------------------------------------------------
 
+    // TODO anot
+    static public String oldfindUsers() {
+        return "SELECT DISTINCT _user.id, _user.nickname, _user.about, _user.fullname, _user.email " +
+                "FROM forums forum LEFT JOIN threads thread ON (thread.forum_id=forum.id) " +
+                "LEFT JOIN posts post ON (forum.id = post.forum_id) " +
+                "JOIN userprofiles _user ON (_user.id = thread.author_id OR _user.id=post.author_id) " +
+                "WHERE forum.id = ?";
+    }
     static public String incThreadCount() {
         return "UPDATE forums SET threads=threads+1 WHERE id = ?";
     }
